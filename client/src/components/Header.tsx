@@ -13,25 +13,25 @@ interface HeaderProps {
 export default function Header({ language, setLanguage }: HeaderProps) {
   const navItems = {
     ar: [
-      { label: 'الرئيسية', href: '#home' },
-      { label: 'المرشح وسيرته', href: '#candidate' },
-      { label: 'البرنامج الانتخابي', href: '#program' },
-      { label: 'سبورة القرب والشكايات', href: '#regional' },
-      { label: 'اللقاءات والميدان', href: '#events' },
+      { label: 'الرئيسية', href: '/' },
+      { label: 'المرشح وسيرته', href: '/candidate' },
+      { label: 'البرنامج الانتخابي', href: '/program' },
+      { label: 'سبورة القرب والشكايات', href: '/proximity-board' },
+      { label: 'اللقاءات والميدان', href: '/field-work' },
     ],
     fr: [
-      { label: 'Accueil', href: '#home' },
-      { label: 'Candidat', href: '#candidate' },
-      { label: 'Programme', href: '#program' },
-      { label: 'Régions', href: '#regional' },
-      { label: 'Événements', href: '#events' },
+      { label: 'Accueil', href: '/' },
+      { label: 'Candidat', href: '/candidate' },
+      { label: 'Programme', href: '/program' },
+      { label: 'Proximité', href: '/proximity-board' },
+      { label: 'Événements', href: '/field-work' },
     ],
     en: [
-      { label: 'Home', href: '#home' },
-      { label: 'Candidate', href: '#candidate' },
-      { label: 'Program', href: '#program' },
-      { label: 'Regions', href: '#regional' },
-      { label: 'Events', href: '#events' },
+      { label: 'Home', href: '/' },
+      { label: 'Candidate', href: '/candidate' },
+      { label: 'Program', href: '/program' },
+      { label: 'Complaints', href: '/proximity-board' },
+      { label: 'Field Work', href: '/field-work' },
     ],
   };
 
@@ -64,7 +64,7 @@ export default function Header({ language, setLanguage }: HeaderProps) {
               <a
                 key={item.href}
                 href={item.href}
-                className="nav-button text-sm"
+                className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-accent/20 hover:text-accent"
               >
                 {item.label}
               </a>
