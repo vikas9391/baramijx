@@ -5,16 +5,33 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import CandidatePage from "./pages/Candidate";
+import ProgramPage from "./pages/Program";
+import ProximityBoardPage from "./pages/ProximityBoard";
+import FieldWorkPage from "./pages/FieldWork";
+import { useState } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 
 function Router() {
+  const [language, setLanguage] = useState<'ar' | 'fr' | 'en'>('ar');
+
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <Header language={language} setLanguage={setLanguage} />
+      <Switch>
+        <Route path="/" component={() => <Home language={language} />} />
+        <Route path="/candidate" component={() => <CandidatePage language={language} />} />
+        <Route path="/program" component={() => <ProgramPage language={language} />} />
+        <Route path="/proximity-board" component={() => <ProximityBoardPage language={language} />} />
+        <Route path="/field-work" component={() => <FieldWorkPage language={language} />} />
+        <Route path="/404" component={NotFound} />
+        {/* Final fallback route */}
+        <Route component={NotFound} />
+      </Switch>
+      <Footer language={language} />
+    </>
   );
 }
 
@@ -32,7 +49,9 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <div className="flex flex-col min-h-screen">
+            <Router />
+          </div>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
