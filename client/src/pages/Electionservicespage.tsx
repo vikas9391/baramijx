@@ -1,19 +1,18 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'wouter';
-import Header from './Header';
 
 interface ElectionServicesPageProps {
   language: 'ar' | 'fr' | 'en';
-  setLanguage: (lang: 'ar' | 'fr' | 'en') => void;
 }
 
 /**
  * Our Election Services Page
  * Design: BaramijX-style single-page service showcase
  * Sections: Hero, Strategic Framework, Why Digital Campaign,
- *           Pricing Packages, Budget Estimator, Compliance, Footer
+ *           Pricing Packages, Budget Estimator, Compliance
+ * NOTE: Header and Footer are rendered globally in App.tsx — do not import them here.
  */
-export default function ElectionServicesPage({ language, setLanguage }: ElectionServicesPageProps) {
+export default function ElectionServicesPage({ language }: ElectionServicesPageProps) {
   const isRTL = language === 'ar';
 
   const content = {
@@ -41,10 +40,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
         {
           title: 'الكرامة والعدالة',
           desc: 'هيكلة البرامج الانتخابية للتركيز على أولويات الناخب الحقيقية: الصحة والتشغيل والتعليم العمومي والبنية التحتية الأساسية.',
-        },
-        {
-          title: 'الشفافية والمحاسبة',
-          desc: 'متتبع الالتزامات وميثاق التوقيع العلني لإظهار أن حملتكم تقف مع السياسة النظيفة والصادقة.',
         },
         {
           title: 'الشفافية والمحاسبة',
@@ -135,15 +130,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
       complianceSubtitle:
         'نعمل بامتثال مطلق لمبادئ الانتخابات المغربية ومناشير وزارة الداخلية ومعايير خصوصية البيانات CNDP لحماية حملتكم واحترام الناخبين.',
       complianceItems: ['متوافق مع خصوصية بيانات CNDP', 'مبادئ وزارة الداخلية', 'موافقات المشغلين الرسمية للرسائل النصية'],
-      footerTagline: 'بنية تحتية سيادية للحملات مصممة لربط المرشحين بالمواطنين عبر المغرب.',
-      footerCampaigns: 'الحملات',
-      footerCampaignsLinks: ['الإطار', 'الأسعار', 'العرض التفاعلي'],
-      footerPortal: 'بوابة المرشح',
-      footerPortalLinks: ['مكتب تظلمات المواطنين'],
-      footerCompliance: 'الامتثال',
-      footerComplianceLinks: ['خصوصية CNDP', 'استضافة سيادية'],
-      footerCopyright: '© 2026 BaramijX Morocco. جميع الحقوق محفوظة.',
-      footerSlogan: 'سياسة القرب والكرامة أولاً',
     },
     fr: {
       eyebrow: 'Infrastructure Souveraine de Campagne de Proximité',
@@ -259,15 +245,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
       complianceSubtitle:
         "Nous travaillons en conformité absolue avec les directives électorales marocaines, les circulaires du Ministère de l'Intérieur et les normes de confidentialité des données CNDP pour protéger votre campagne et respecter les électeurs.",
       complianceItems: ['Conforme Confidentialité des Données CNDP', "Directives du Ministère de l'Intérieur", 'Approbations SMS des Opérateurs Officiels'],
-      footerTagline: 'Infrastructure de campagne souveraine conçue pour connecter candidats et citoyens à travers le Maroc.',
-      footerCampaigns: 'Campagnes',
-      footerCampaignsLinks: ['Cadre', 'Tarifs', 'Démo Interactive'],
-      footerPortal: 'Portail Candidat',
-      footerPortalLinks: ['Bureau de Doléances Citoyennes'],
-      footerCompliance: 'Conformité',
-      footerComplianceLinks: ['Confidentialité CNDP', 'Hébergement Souverain'],
-      footerCopyright: '© 2026 BaramijX Morocco. Tous droits réservés.',
-      footerSlogan: "Politique de Proximité et Dignité d'Abord",
     },
     en: {
       eyebrow: 'Sovereign Proximity Campaign Infrastructure',
@@ -383,15 +360,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
       complianceSubtitle:
         'We work in absolute compliance with Moroccan election guidelines, Ministry of Interior circulars, and CNDP data privacy standards to protect your campaign and respect voters.',
       complianceItems: ['CNDP Data Privacy Compliant', 'Ministry of Interior Guidelines', 'Official Carrier SMS Approvals'],
-      footerTagline: 'Sovereign campaign infrastructure engineered to connect candidates and citizens across Morocco.',
-      footerCampaigns: 'Campaigns',
-      footerCampaignsLinks: ['Framework', 'Pricing', 'Interactive Demo'],
-      footerPortal: 'Candidate Portal',
-      footerPortalLinks: ['Citizen Grievance Desk'],
-      footerCompliance: 'Compliance',
-      footerComplianceLinks: ['CNDP Privacy', 'Sovereign Hosting'],
-      footerCopyright: '© 2026 BaramijX Morocco. All rights reserved.',
-      footerSlogan: 'Proximity Policy and Dignity First',
     },
   };
 
@@ -413,8 +381,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
 
   return (
     <div className="min-h-screen bg-background text-foreground" dir={isRTL ? 'rtl' : 'ltr'}>
-      <Header language={language} setLanguage={setLanguage} />
-
       {/* Hero */}
       <section className="bg-primary text-primary-foreground py-16 md:py-24">
         <div className="container mx-auto px-4 text-center max-w-4xl">
@@ -643,46 +609,6 @@ export default function ElectionServicesPage({ language, setLanguage }: Election
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="font-bold text-lg mb-2">BaramijX Morocco</div>
-              <p className="text-sm text-primary-foreground/70">{c.footerTagline}</p>
-            </div>
-            <div>
-              <div className="font-semibold mb-3">{c.footerCampaigns}</div>
-              <ul className="space-y-2 text-sm text-primary-foreground/70">
-                {c.footerCampaignsLinks.map((link, idx) => (
-                  <li key={idx}>{link}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="font-semibold mb-3">{c.footerPortal}</div>
-              <ul className="space-y-2 text-sm text-primary-foreground/70">
-                {c.footerPortalLinks.map((link, idx) => (
-                  <li key={idx}>{link}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="font-semibold mb-3">{c.footerCompliance}</div>
-              <ul className="space-y-2 text-sm text-primary-foreground/70">
-                {c.footerComplianceLinks.map((link, idx) => (
-                  <li key={idx}>{link}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-primary-foreground/60">
-            <p>{c.footerCopyright}</p>
-            <p className="text-accent font-medium">{c.footerSlogan}</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

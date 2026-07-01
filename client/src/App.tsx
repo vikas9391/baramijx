@@ -10,6 +10,7 @@ import CandidatePage from "./pages/Candidate";
 import ProgramPage from "./pages/Program";
 import ProximityBoardPage from "./pages/ProximityBoard";
 import FieldWorkPage from "./pages/FieldWork";
+import ElectionServicesPage from "./pages/Electionservicespage";
 import { useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -37,6 +38,7 @@ function Router() {
         <Route path="/program" component={() => <ProgramPage language={language} />} />
         <Route path="/proximity-board" component={() => <ProximityBoardPage language={language} />} />
         <Route path="/field-work" component={() => <FieldWorkPage language={language} />} />
+        <Route path="/election-services" component={() => <ElectionServicesPage language={language} />} />
         <Route path="/404" component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
