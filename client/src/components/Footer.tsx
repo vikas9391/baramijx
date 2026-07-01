@@ -1,8 +1,5 @@
-/**
- * Footer Component
- * Design: Dark navy background with gold accents, comprehensive footer info
- * Features: Party branding, quick links, commitments, copyright
- */
+
+import { Link } from 'wouter';
 
 interface FooterProps {
   language: 'ar' | 'fr' | 'en';
@@ -15,9 +12,9 @@ export default function Footer({ language }: FooterProps) {
       candidateDesc: 'مرشحكم لبرلمان 2026 عن دائرة مراكش المنارة. كفاءة هندسية وتدبيرية في خدمة الصالح العام والتنمية الشاملة.',
       quickLinks: 'بوابات التواصل السريع',
       links: [
-        { label: 'الرئيسية', href: '#home' },
-        { label: 'البرنامج الانتخابي', href: '#program' },
-        { label: 'شكايات المواطنين', href: '#regional' },
+        { label: 'الرئيسية', href: '/' },
+        { label: 'البرنامج الانتخابي', href: '/program' },
+        { label: 'سبورة القرب والشكايات', href: '/proximity-board' },
       ],
       partySection: 'الحزب المغربي الحر',
       partyDesc: 'الحزب المغربي الحر — كرامة المواطن، حرية الاختيار، تنمية عادلة',
@@ -35,9 +32,9 @@ export default function Footer({ language }: FooterProps) {
       candidateDesc: 'Votre candidat au parlement 2026 pour la circonscription de Marrakech-Menara. Compétence technique et gestion au service de l\'intérêt public.',
       quickLinks: 'Liens rapides',
       links: [
-        { label: 'Accueil', href: '#home' },
-        { label: 'Programme', href: '#program' },
-        { label: 'Réclamations', href: '#regional' },
+        { label: 'Accueil', href: '/' },
+        { label: 'Programme', href: '/program' },
+        { label: 'Proximité', href: '/proximity-board' },
       ],
       partySection: 'Parti Marocain Libéral',
       partyDesc: 'Parti Marocain Libéral — Dignité du citoyen, liberté de choix, développement équitable',
@@ -55,9 +52,9 @@ export default function Footer({ language }: FooterProps) {
       candidateDesc: 'Your candidate for parliament 2026 in Marrakech-Menara district. Technical expertise and management in service of public interest.',
       quickLinks: 'Quick Links',
       links: [
-        { label: 'Home', href: '#home' },
-        { label: 'Program', href: '#program' },
-        { label: 'Complaints', href: '#regional' },
+        { label: 'Home', href: '/' },
+        { label: 'Electoral Program', href: '/program' },
+        { label: 'Proximity Board', href: '/proximity-board' },
       ],
       partySection: 'Liberal Moroccan Party',
       partyDesc: 'Liberal Moroccan Party — Citizen dignity, freedom of choice, fair development',
@@ -82,7 +79,7 @@ export default function Footer({ language }: FooterProps) {
           {/* Candidate Info */}
           <div className="space-y-3">
             <img
-              src="/manus-storage/pml-logo_3ded0a5a.png"
+              src="logo.jpeg"
               alt="PML Logo"
               className="h-10 w-10"
             />
@@ -98,12 +95,12 @@ export default function Footer({ language }: FooterProps) {
             <ul className="space-y-2">
               {c.links.map((link, idx) => (
                 <li key={idx}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-primary-foreground/80 hover:text-accent transition-colors duration-200 text-sm"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

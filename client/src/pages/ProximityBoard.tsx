@@ -27,36 +27,99 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
     description: '',
   });
 
-  const [issues, setIssues] = useState<Issue[]>([
-    {
-      id: '1',
-      author: 'حميد ز',
-      date: '2026-06-12',
-      location: 'سيدي الزوين',
-      description: 'العيادة المحلية تفتقر للأدوية الأساسية والمواطنون يسافرون إلى مراكش للفحوصات الطبية البسيطة.',
-      affected: 56,
-      supports: 12,
-    },
-    {
-      id: '2',
-      author: 'مريم أ',
-      date: '2026-06-10',
-      location: 'ايت ايمور',
-      description: 'الفتيات يتوقفن عن الدراسة بسبب نقص النقل المدرسي.',
-      affected: 48,
-      supports: 8,
-    },
-    {
-      id: '3',
-      author: 'سعيد ب',
-      date: '2026-06-08',
-      location: 'المحاميد',
-      description: 'الشباب يحتاجون لمساحات ثقافية وملاعب رياضية قريبة.',
-      affected: 32,
-      supports: 5,
-    },
-  ]);
+  const seedIssues: Record<'ar' | 'fr' | 'en', Issue[]> = {
+    ar: [
+      {
+        id: '1',
+        author: 'حميد ز',
+        date: '2026-06-12',
+        location: 'سيدي الزوين',
+        description: 'العيادة المحلية تفتقر للأدوية الأساسية والمواطنون يسافرون إلى مراكش للفحوصات الطبية البسيطة.',
+        affected: 56,
+        supports: 12,
+      },
+      {
+        id: '2',
+        author: 'مريم أ',
+        date: '2026-06-10',
+        location: 'ايت ايمور',
+        description: 'الفتيات يتوقفن عن الدراسة بسبب نقص النقل المدرسي.',
+        affected: 48,
+        supports: 8,
+      },
+      {
+        id: '3',
+        author: 'سعيد ب',
+        date: '2026-06-08',
+        location: 'المحاميد',
+        description: 'الشباب يحتاجون لمساحات ثقافية وملاعب رياضية قريبة.',
+        affected: 32,
+        supports: 5,
+      },
+    ],
+    fr: [
+      {
+        id: '1',
+        author: 'Hamid Z.',
+        date: '12/06/2026',
+        location: 'Sidi Zouine',
+        description:
+          "Le dispensaire local manque de médicaments essentiels, et les habitants doivent se rendre à Marrakech pour de simples examens médicaux.",
+        affected: 56,
+        supports: 12,
+      },
+      {
+        id: '2',
+        author: 'Meriam A.',
+        date: '10/06/2026',
+        location: 'Aït Imour',
+        description: "Les filles abandonnent l'école faute de transport scolaire.",
+        affected: 48,
+        supports: 8,
+      },
+      {
+        id: '3',
+        author: 'Saïd B.',
+        date: '08/06/2026',
+        location: 'Mahamid',
+        description: "Les jeunes ont besoin d'espaces culturels et de terrains de sport à proximité.",
+        affected: 32,
+        supports: 5,
+      },
+    ],
+    en: [
+      {
+        id: '1',
+        author: 'Hamid Z.',
+        date: '2026-06-12',
+        location: 'Sidi Zouine',
+        description:
+          'The local clinic lacks basic medicines, and residents must travel to Marrakech for simple medical tests.',
+        affected: 56,
+        supports: 12,
+      },
+      {
+        id: '2',
+        author: 'Meriam A.',
+        date: '2026-06-10',
+        location: 'Aït Imour',
+        description: 'Girls are dropping out of school due to the lack of school transportation.',
+        affected: 48,
+        supports: 8,
+      },
+      {
+        id: '3',
+        author: 'Saïd B.',
+        date: '2026-06-08',
+        location: 'Mahamid',
+        description: 'Young people need nearby cultural spaces and sports facilities.',
+        affected: 32,
+        supports: 5,
+      },
+    ],
+  };
 
+  const [issues, setIssues] = useState<Issue[]>(seedIssues[language]);
   const [supportedIssues, setSupportedIssues] = useState<string[]>([]);
 
   const content = {

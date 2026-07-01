@@ -1,3 +1,5 @@
+import { Link } from 'wouter';
+
 /**
  * Field Work Page
  * Design: Timeline of candidate activities and field meetings
@@ -11,128 +13,47 @@ interface FieldWorkPageProps {
 export default function FieldWorkPage({ language }: FieldWorkPageProps) {
   const content = {
     ar: {
-      title: 'اللقاءات والميدان',
-      subtitle: 'لقاءات مستمرة مع المواطنين في القرى والأحياء',
+      title: 'الميدان والإنصات',
+      subtitle: 'لقاءات مستمرة ومباشرة مع المواطنين في القرى والأحياء للإنصات المباشر والتخطيط للتقدم المحلي.',
       timelineTitle: 'جدول اللقاءات الميدانية',
       events: [
         {
           date: '12 يونيو 2026',
           location: 'سيدي الزوين',
-          title: 'حوار مع المهندسين والمهنيين المحليين',
-          description: 'حوار تعاوني مع المهنيين المحليين حول التنمية واللوجستيك والنقل.',
+          title: 'جولة سيدي الزوين',
+          description: 'حوار تعاوني مع المهنيين المحليين في سيدي الزوين حول التنمية واللوجستيك.',
           type: 'meeting',
-        },
-        {
-          date: '10 يونيو 2026',
-          location: 'ايت ايمور',
-          title: 'لقاء مع نساء الحي',
-          description: 'نقاش حول التعليم والنقل المدرسي والفرص الاقتصادية للنساء.',
-          type: 'meeting',
-        },
-        {
-          date: '8 يونيو 2026',
-          location: 'المحاميد',
-          title: 'ندوة حول الشباب والتشغيل',
-          description: 'لقاء مع شباب الحي لمناقشة فرص التكوين والتشغيل والتعاونيات.',
-          type: 'workshop',
-        },
-        {
-          date: '5 يونيو 2026',
-          location: 'الاوداية',
-          title: 'حوار مع الجمعيات المحلية',
-          description: 'لقاء مع جمعيات المجتمع المدني لمناقشة احتياجات الحي.',
-          type: 'meeting',
-        },
-        {
-          date: '1 يونيو 2026',
-          location: 'مراكش المنارة',
-          title: 'إطلاق الحملة الانتخابية',
-          description: 'إطلاق رسمي للحملة الانتخابية مع أعضاء الحزب والمواطنين.',
-          type: 'launch',
+          image: '/field.jpeg',
         },
       ],
     },
     fr: {
       title: 'Proximité de Terrain et Dialogues Locaux',
-      subtitle: 'Réunions continues avec les citoyens dans les villages et quartiers',
+      subtitle: 'Des rencontres continues et directes avec les citoyens dans les villages et quartiers pour écouter directement et planifier le progrès local.',
       timelineTitle: 'Calendrier des Rencontres de Terrain',
       events: [
         {
           date: '12 juin 2026',
           location: 'Sidi Zouine',
-          title: 'Dialogue avec les ingénieurs et professionnels locaux',
-          description: 'Un dialogue collaboratif avec les professionnels locaux sur le développement et la logistique.',
+          title: 'Tournée de Sidi Zouine',
+          description: 'Un dialogue collaboratif avec les professionnels locaux à Sidi Zouine pour discuter du développement et de la logistique.',
           type: 'meeting',
-        },
-        {
-          date: '10 juin 2026',
-          location: 'Aït Imour',
-          title: 'Rencontre avec les femmes du quartier',
-          description: 'Discussion sur l\'éducation, le transport scolaire et les opportunités économiques pour les femmes.',
-          type: 'meeting',
-        },
-        {
-          date: '8 juin 2026',
-          location: 'Mhamid',
-          title: 'Séminaire sur la jeunesse et l\'emploi',
-          description: 'Rencontre avec les jeunes du quartier pour discuter des opportunités de formation et d\'emploi.',
-          type: 'workshop',
-        },
-        {
-          date: '5 juin 2026',
-          location: 'Oudaïa',
-          title: 'Dialogue avec les associations locales',
-          description: 'Rencontre avec les associations de la société civile pour discuter des besoins du quartier.',
-          type: 'meeting',
-        },
-        {
-          date: '1er juin 2026',
-          location: 'Marrakech-Menara',
-          title: 'Lancement de la campagne électorale',
-          description: 'Lancement officiel de la campagne électorale avec les membres du parti et les citoyens.',
-          type: 'launch',
+          image: '/field.jpeg',
         },
       ],
     },
     en: {
       title: 'Field Proximity & Local Dialogues',
-      subtitle: 'Continuous meetings with citizens in villages and neighborhoods',
+      subtitle: 'Continuous and live meetings with citizens in villages and neighborhoods to listen directly and plan local progress.',
       timelineTitle: 'Field Meeting Calendar',
       events: [
         {
           date: 'June 12, 2026',
           location: 'Sidi Zouine',
-          title: 'Dialogue with Local Engineers and Professionals',
-          description: 'A collaborative dialogue with local professionals discussing development and logistics.',
+          title: 'Sidi Zouine Tour',
+          description: 'A collaborative dialogue with local professionals in Sidi Zouine to discuss development and logistics.',
           type: 'meeting',
-        },
-        {
-          date: 'June 10, 2026',
-          location: 'Aït Imour',
-          title: 'Meeting with Women of the Neighborhood',
-          description: 'Discussion on education, school transportation, and economic opportunities for women.',
-          type: 'meeting',
-        },
-        {
-          date: 'June 8, 2026',
-          location: 'Mhamid',
-          title: 'Youth and Employment Seminar',
-          description: 'Meeting with neighborhood youth to discuss training and employment opportunities.',
-          type: 'workshop',
-        },
-        {
-          date: 'June 5, 2026',
-          location: 'Oudaïa',
-          title: 'Dialogue with Local Associations',
-          description: 'Meeting with civil society associations to discuss neighborhood needs.',
-          type: 'meeting',
-        },
-        {
-          date: 'June 1, 2026',
-          location: 'Marrakech-Menara',
-          title: 'Campaign Launch',
-          description: 'Official launch of the electoral campaign with party members and citizens.',
-          type: 'launch',
+          image: '/field.jpeg',
         },
       ],
     },
@@ -192,51 +113,62 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
 
                     {/* Event Card */}
                     <div
-                      className={`bg-card rounded-lg p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-300 ${
+                      className={`bg-card rounded-lg overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-300 flex flex-col sm:flex-row ${
                         idx % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-3">
+                      <div className="p-6 flex-1 flex flex-col gap-3">
+                        {/* Event Type Badge */}
                         <div>
-                          <p className="text-sm font-semibold text-accent">
+                          <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full">
+                            {event.type === 'launch'
+                              ? language === 'ar'
+                                ? 'إطلاق'
+                                : language === 'fr'
+                                ? 'Lancement'
+                                : 'Launch'
+                              : event.type === 'workshop'
+                              ? language === 'ar'
+                                ? 'ورشة عمل'
+                                : language === 'fr'
+                                ? 'Atelier'
+                                : 'Workshop'
+                              : language === 'ar'
+                              ? 'لقاء'
+                              : language === 'fr'
+                              ? 'Réunion'
+                              : 'Meeting'}
+                          </span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-foreground">
+                          {event.title}
+                        </h3>
+
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                          <p className="font-semibold text-accent">
                             {event.date}
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground">
                             📍 {event.location}
                           </p>
                         </div>
+
+                        <p className="text-foreground/80 leading-relaxed">
+                          {event.description}
+                        </p>
                       </div>
 
-                      <h3 className="text-lg font-bold text-foreground mb-2">
-                        {event.title}
-                      </h3>
-
-                      <p className="text-foreground/80 leading-relaxed">
-                        {event.description}
-                      </p>
-
-                      {/* Event Type Badge */}
-                      <div className="mt-4 inline-block">
-                        <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full">
-                          {event.type === 'launch'
-                            ? language === 'ar'
-                              ? 'إطلاق'
-                              : language === 'fr'
-                              ? 'Lancement'
-                              : 'Launch'
-                            : event.type === 'workshop'
-                            ? language === 'ar'
-                              ? 'ورشة عمل'
-                              : language === 'fr'
-                              ? 'Atelier'
-                              : 'Workshop'
-                            : language === 'ar'
-                            ? 'لقاء'
-                            : language === 'fr'
-                            ? 'Réunion'
-                            : 'Meeting'}
-                        </span>
-                      </div>
+                      {/* Event Image */}
+                      {event.image && (
+                        <div className="w-full sm:w-56 md:w-72 h-56 sm:h-auto shrink-0 order-first sm:order-last">
+                          <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -263,13 +195,13 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
               ? 'Enregistrez votre réclamation ou suggestion et l\'équipe de terrain vous contactera'
               : 'Register your complaint or suggestion and the field team will contact you'}
           </p>
-          <button className="cta-button">
+          <Link href="/proximity-board" className="cta-button">
             {language === 'ar'
               ? 'سجل الآن'
               : language === 'fr'
               ? 'Enregistrez-vous maintenant'
               : 'Register Now'}
-          </button>
+          </Link>
         </div>
       </section>
     </div>

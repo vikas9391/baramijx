@@ -1,3 +1,5 @@
+import { Link } from 'wouter';
+
 /**
  * Hero Component
  * Design: Dark navy background with gold accents, candidate profile image
@@ -12,31 +14,37 @@ export default function Hero({ language }: HeroProps) {
   const content = {
     ar: {
       election: 'الاستحقاقات الانتخابية 2026',
+      partyBadge: 'الحزب المغربي الحر (PML)',
       title: 'المهندس عبد المنعم الزويني',
       subtitle: 'مرشح الدائرة التشريعية مراكش المنارة',
       party: 'الحزب المغربي الحر',
       tagline: 'تنمية عادلة . كرامة مصونة . سياسة القرب',
-      message: 'أخواتي وإخواني، ساكنة دائرة مراكش المنارة، بمختلف جماعاتها الحضرية والقروية، وخاصة ساكنة سيدي الزوين والمناطق المجاورة من الاوداية والسويهلة وايت ايمور، واكفاي، والسعادة والمحاميد والمسيرة...\n\nأتوجه إليكم اليوم بكل صدق ومسؤولية، لأعلن قراري خوض غمار الاستحقاقات الانتخابية المقبلة، إيماناً مني بأن العمل السياسي النبيل يظل وسيلة للترافع الجاد عن قضايا المواطن، والإنصات الحقيقي لانشغالاته، والعمل المشترك من أجل تحقيق تنمية عادلة ومتوازنة تستجيب لتطلعات الجميع.',
+      message1: 'أخواتي وإخواني، ساكنة دائرة مراكش المنارة، بمختلف جماعاتها الحضرية والقروية، وخاصة ساكنة سيدي الزوين والمناطق المجاورة من الاوداية والسويهلة وايت ايمور، واكفاي، والسعادة والمحاميد والمسيرة...',
+      message2: 'أتوجه إليكم اليوم بكل صدق ومسؤولية، لأعلن قراري خوض غمار الاستحقاقات الانتخابية المقبلة، إيماناً مني بأن العمل السياسي النبيل يظل وسيلة للترافع الجاد عن قضايا المواطن، والإنصات الحقيقي لانشغالاته، والعمل المشترك من أجل تحقيق تنمية عادلة ومتوازنة تستجيب لتطلعات الجميع.',
       cta1: 'اكتشف برنامجنا الانتخابي',
       cta2: 'سجل مشكلتك بالحي',
     },
     fr: {
-      election: 'Élections 2026',
+      election: 'Élections Législatives 2026',
+      partyBadge: 'Parti Marocain Libéral (PML)',
       title: 'Ingénieur Abdelmounaim Zouini',
       subtitle: 'Candidat de la circonscription de Marrakech-Menara',
       party: 'Parti Marocain Libéral',
       tagline: 'Développement équitable . Dignité préservée . Politique de proximité',
-      message: 'Citoyens et citoyennes de la circonscription de Marrakech-Menara, je me présente devant vous aujourd\'hui avec sincérité et responsabilité pour annoncer ma candidature aux prochaines élections législatives. Je crois fermement que l\'action politique noble reste un moyen de défendre les causes des citoyens, d\'écouter vraiment leurs préoccupations, et de travailler ensemble pour réaliser un développement équitable et équilibré.',
+      message1: 'Mes sœurs et frères, citoyens de la circonscription de Marrakech-Menara, dans toutes ses communes urbaines et rurales, notamment Sidi Zouine, Oudaya, Souihla, Ait Imour, Akfay, Saada, Mhamid et Massira...',
+      message2: 'Je m\'adresse à vous aujourd\'hui avec sincérité et responsabilité pour annoncer ma décision de me présenter aux prochaines élections législatives. Je crois fermement que l\'action politique noble reste un outil sérieux pour défendre les droits des citoyens, écouter réellement leurs préoccupations, et œuvrer ensemble pour un développement juste et équilibré.',
       cta1: 'Découvrez notre programme',
       cta2: 'Enregistrez votre problème',
     },
     en: {
-      election: '2026 Elections',
+      election: 'Legislative Elections 2026',
+      partyBadge: 'Moroccan Liberal Party (PML)',
       title: 'Engineer Abdelmounaim Zouini',
       subtitle: 'Candidate for Marrakech-Menara Legislative District',
       party: 'Liberal Moroccan Party',
       tagline: 'Fair Development . Preserved Dignity . Proximity Politics',
-      message: 'Citizens of Marrakech-Menara district, I stand before you today with sincerity and responsibility to announce my candidacy for the upcoming legislative elections. I firmly believe that noble political action remains a means to advocate for citizens\' issues, truly listen to their concerns, and work together to achieve fair and balanced development that meets everyone\'s aspirations.',
+      message1: 'My sisters and brothers, citizens of Marrakech-Menara, in all its urban and rural communes, especially sidi Zouine, Oudaya, Souihla, Ait Imour, Akfay, Saada, Mhamid, and Massira...',
+      message2: 'I address you today with honesty and responsibility to announce my decision to run in the upcoming legislative elections. I firmly believe that noble political action is a serious tool to advocate for citizens\' rights, listen to their concerns, and work together for fair, balanced development.',
       cta1: 'Discover Our Program',
       cta2: 'Register Your Problem',
     },
@@ -45,13 +53,13 @@ export default function Hero({ language }: HeroProps) {
   const c = content[language];
 
   return (
-    <section id="home" className="bg-primary text-primary-foreground py-16 md:py-24">
+    <section id="home" className="bg-primary text-primary-foreground pt-8 pb-16 md:pt-12 md:pb-24">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left: Text Content */}
           <div className="space-y-6">
             <div className="inline-block bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm font-semibold">
-              {c.election}
+              {c.partyBadge}
             </div>
 
             <div>
@@ -64,31 +72,37 @@ export default function Hero({ language }: HeroProps) {
             <div className="space-y-4">
               <p className="text-xl font-semibold text-accent">{c.tagline}</p>
               <p className="text-base leading-relaxed text-primary-foreground/90">
-                {c.message}
+                {c.message1}
+              </p>
+              <p className="text-base leading-relaxed text-primary-foreground/90">
+                {c.message2}
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="cta-button">
+              <a href="#program" className="cta-button text-center">
                 {c.cta1}
-              </button>
-              <button className="px-6 py-3 border-2 border-accent text-accent rounded-lg font-semibold hover:bg-accent/10 transition-colors duration-200">
+              </a>
+              <Link
+                href="/proximity-board"
+                className="px-6 py-3 border-2 border-accent text-accent rounded-lg font-semibold hover:bg-accent/10 transition-colors duration-200 text-center"
+              >
                 {c.cta2}
-              </button>
+              </Link>
             </div>
           </div>
 
           {/* Right: Candidate Image */}
           <div className="flex justify-center">
-            <div className="relative">
+            <div className="relative w-full max-w-md aspect-[4/5]">
               <div className="absolute inset-0 bg-accent/20 rounded-lg blur-xl"></div>
               <img
-                src="/manus-storage/CandidateProfilePic_057ec8d9.jpeg"
+                src="/CandidateProfile.jpeg"
                 alt={c.title}
-                className="relative w-full max-w-md rounded-lg shadow-2xl border-4 border-accent/30"
+                className="relative w-full h-full object-cover rounded-lg shadow-2xl border-4 border-accent/30"
               />
               <div className="absolute bottom-4 right-4 bg-primary/90 backdrop-blur-sm px-4 py-2 rounded-lg">
-                <p className="text-sm font-semibold text-accent">{c.election}</p>
+                <p className="text-sm font-semibold text-accent uppercase tracking-wide">{c.election}</p>
                 <p className="text-xs text-primary-foreground">{c.title}</p>
               </div>
             </div>
