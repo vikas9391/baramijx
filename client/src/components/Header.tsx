@@ -125,17 +125,24 @@ export default function Header({ language, setLanguage }: HeaderProps) {
       {/* Main nav bar */}
       <div className="shadow-md border-b" style={{ backgroundColor: '#F8F7F5', borderColor: '#e5e2dc' }}>
         <div className="container mx-auto px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0" onClick={closeMobile}>
+            <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0" onClick={closeMobile}>
               <img
                 src="/logo.jpeg"
                 alt="PML Logo"
-                className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain shrink-0"
               />
-              <div className="hidden sm:block">
-                <div className="text-lg font-bold" style={{ color: '#0F1419' }}>الحزب المغربي الحر</div>
-                <div className="text-xs text-accent">PARTI MAROCAIN LIBÉRAL</div>
+              <div className="min-w-0">
+                <div
+                  className="text-xs sm:text-lg font-bold leading-tight truncate"
+                  style={{ color: '#0F1419' }}
+                >
+                  الحزب المغربي الحر
+                </div>
+                <div className="text-[9px] sm:text-xs text-accent leading-tight truncate">
+                  PARTI MAROCAIN LIBÉRAL
+                </div>
               </div>
             </Link>
 
@@ -172,7 +179,7 @@ export default function Header({ language, setLanguage }: HeaderProps) {
                 onClick={() => setMobileOpen((prev) => !prev)}
                 aria-label={menuLabel[language]}
                 aria-expanded={mobileOpen}
-                className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg border transition-colors duration-200"
+                className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg border transition-colors duration-200 shrink-0"
                 style={{
                   borderColor: '#0F1419',
                   color: '#0F1419',
