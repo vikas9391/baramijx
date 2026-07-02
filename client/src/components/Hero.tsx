@@ -53,39 +53,39 @@ export default function Hero({ language }: HeroProps) {
   const c = content[language];
 
   return (
-    <section id="home" className="bg-primary text-primary-foreground pt-8 pb-16 md:pt-12 md:pb-24">
+    <section id="home" className="bg-primary text-primary-foreground pt-6 pb-12 md:pt-12 md:pb-24">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: Text Content */}
-          <div className="space-y-6">
-            <div className="inline-block bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm font-semibold">
+          <div className="space-y-5 md:space-y-6">
+            <div className="inline-block bg-accent text-accent-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-semibold">
               {c.partyBadge}
             </div>
 
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">{c.title}</h1>
-              <div className="h-1 bg-accent w-20 mb-4"></div>
-              <p className="text-lg text-primary-foreground/80">{c.subtitle}</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight">{c.title}</h1>
+              <div className="h-1 bg-accent w-16 md:w-20 mb-3 md:mb-4"></div>
+              <p className="text-base md:text-lg text-primary-foreground/80">{c.subtitle}</p>
               <p className="text-sm text-accent mt-2">{c.party}</p>
             </div>
 
-            <div className="space-y-4">
-              <p className="text-xl font-semibold text-accent">{c.tagline}</p>
-              <p className="text-base leading-relaxed text-primary-foreground/90">
+            <div className="space-y-3 md:space-y-4">
+              <p className="text-lg md:text-xl font-semibold text-accent">{c.tagline}</p>
+              <p className="text-sm md:text-base leading-relaxed text-primary-foreground/90">
                 {c.message1}
               </p>
-              <p className="text-base leading-relaxed text-primary-foreground/90">
+              <p className="text-sm md:text-base leading-relaxed text-primary-foreground/90">
                 {c.message2}
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <a href="#program" className="cta-button text-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2 md:pt-4">
+              <a href="#program" className="cta-button text-center text-sm md:text-base">
                 {c.cta1}
               </a>
               <Link
                 href="/proximity-board"
-                className="px-6 py-3 border-2 border-accent text-accent rounded-lg font-semibold hover:bg-accent/10 transition-colors duration-200 text-center"
+                className="px-5 py-2.5 md:px-6 md:py-3 border-2 border-accent text-accent rounded-lg font-semibold hover:bg-accent/10 transition-colors duration-200 text-center text-sm md:text-base"
               >
                 {c.cta2}
               </Link>
@@ -94,16 +94,16 @@ export default function Hero({ language }: HeroProps) {
 
           {/* Right: Candidate Image */}
           <div className="flex justify-center">
-            <div className="relative w-full max-w-md aspect-[4/5]">
+            <div className="relative w-full max-w-sm md:max-w-md aspect-[4/5]">
               <div className="absolute inset-0 bg-accent/20 rounded-lg blur-xl"></div>
               <img
                 src="/CandidateProfile.jpeg"
                 alt={c.title}
                 className="relative w-full h-full object-cover rounded-lg shadow-2xl border-4 border-accent/30"
               />
-              <div className="absolute bottom-4 right-4 bg-primary/90 backdrop-blur-sm px-4 py-2 rounded-lg">
-                <p className="text-sm font-semibold text-accent uppercase tracking-wide">{c.election}</p>
-                <p className="text-xs text-primary-foreground">{c.title}</p>
+              <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4 bg-primary/90 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-lg">
+                <p className="text-xs md:text-sm font-semibold text-accent uppercase tracking-wide">{c.election}</p>
+                <p className="text-[11px] md:text-xs text-primary-foreground">{c.title}</p>
               </div>
             </div>
           </div>

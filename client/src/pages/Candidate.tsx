@@ -122,11 +122,11 @@ export default function CandidatePage({ language }: CandidatePageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section — image left, title + bio right */}
-      <section className="bg-primary text-primary-foreground py-12 md:py-16">
+      <section className="bg-primary text-primary-foreground py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="flex justify-center order-2 md:order-1">
-              <div className="relative w-full max-w-md aspect-[4/5]">
+              <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-[4/5]">
                 <div className="absolute inset-0 bg-accent/20 rounded-lg blur-xl"></div>
                 <img
                   src="CandidateProfile.jpeg"
@@ -136,14 +136,14 @@ export default function CandidatePage({ language }: CandidatePageProps) {
               </div>
             </div>
 
-            <div className="space-y-4 order-1 md:order-2">
-              <h1 className="text-4xl md:text-5xl font-bold">{c.title}</h1>
-              <div className="h-1 bg-accent w-20"></div>
-              <p className="text-lg text-primary-foreground/80">{c.subtitle}</p>
-              <p className="text-accent font-semibold">{c.competenceTagline}</p>
+            <div className="space-y-3 md:space-y-4 order-1 md:order-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">{c.title}</h1>
+              <div className="h-1 bg-accent w-16 md:w-20"></div>
+              <p className="text-base md:text-lg text-primary-foreground/80">{c.subtitle}</p>
+              <p className="text-accent font-semibold text-sm md:text-base">{c.competenceTagline}</p>
 
               <div className="pt-2 border-t border-primary-foreground/10 mt-2">
-                <h2 className="text-xl font-bold mt-4 mb-2">{c.bioTitle}</h2>
+                <h2 className="text-lg md:text-xl font-bold mt-4 mb-2">{c.bioTitle}</h2>
                 <p className="text-sm leading-relaxed text-primary-foreground/85">
                   {c.bioText}
                 </p>
@@ -154,9 +154,9 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       </section>
 
       {/* Highlights Section */}
-      <section className="py-10 md:py-14 bg-background">
+      <section className="py-8 md:py-14 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {c.highlights.map((highlight, idx) => (
               <div key={idx} className="program-card group">
                 <div className="text-3xl mb-2 text-accent">✓</div>
@@ -170,12 +170,12 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       </section>
 
       {/* Credentials + Experience — side by side on desktop */}
-      <section className="py-10 md:py-14 bg-muted/30">
+      <section className="py-8 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
             <div>
-              <h2 className="section-title text-2xl md:text-3xl">{c.credentialsTitle}</h2>
-              <div className="h-1 bg-accent w-16 mb-5"></div>
+              <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.credentialsTitle}</h2>
+              <div className="h-1 bg-accent w-16 mb-4 md:mb-5"></div>
               <ul className="space-y-2.5">
                 {c.credentials.map((cred, idx) => (
                   <li key={idx} className="flex gap-3">
@@ -187,8 +187,8 @@ export default function CandidatePage({ language }: CandidatePageProps) {
             </div>
 
             <div>
-              <h2 className="section-title text-2xl md:text-3xl">{c.experienceTitle}</h2>
-              <div className="h-1 bg-accent w-16 mb-5"></div>
+              <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.experienceTitle}</h2>
+              <div className="h-1 bg-accent w-16 mb-4 md:mb-5"></div>
               <ul className="space-y-2.5">
                 {c.experience.map((exp, idx) => (
                   <li key={idx} className="flex gap-3">
@@ -203,11 +203,11 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       </section>
 
       {/* Civic Experience Section */}
-      <section className="py-10 md:py-14 bg-background">
+      <section className="py-8 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <h2 className="section-title text-2xl md:text-3xl">{c.civicTitle}</h2>
-            <div className="h-1 bg-accent w-16 mb-5"></div>
+            <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.civicTitle}</h2>
+            <div className="h-1 bg-accent w-16 mb-4 md:mb-5"></div>
             <ul className="space-y-2.5">
               {c.civic.map((item, idx) => (
                 <li key={idx} className="flex gap-3">
@@ -221,14 +221,14 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       </section>
 
       {/* Honor Charter Section */}
-      <section className="py-10 md:py-14 bg-primary text-primary-foreground">
+      <section className="py-8 md:py-14 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">{c.charterTitle}</h2>
-            <div className="h-1 bg-accent w-20 mb-5"></div>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">{c.charterTitle}</h2>
+            <div className="h-1 bg-accent w-16 md:w-20 mb-4 md:mb-5"></div>
 
-            <div className="bg-accent/10 border-l-4 border-accent p-6 rounded-lg mb-5">
-              <p className="text-base leading-relaxed text-primary-foreground/90 italic mb-4">
+            <div className="bg-accent/10 border-l-4 border-accent p-4 sm:p-6 rounded-lg mb-4 md:mb-5">
+              <p className="text-sm sm:text-base leading-relaxed text-primary-foreground/90 italic mb-4">
                 "{c.charterText}"
               </p>
               <p className="text-right font-bold text-accent">
