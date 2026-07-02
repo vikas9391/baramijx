@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Hero from '@/components/Hero';
 
 /**
@@ -377,61 +377,135 @@ function CandidateAvatarIcon({ className }: { className?: string }) {
   );
 }
 
+/* ---------------- Chat types ---------------- */
+interface ChatMessage {
+  role: 'assistant' | 'user';
+  text: string;
+}
+
+// Backend endpoint. Set VITE_CHAT_API_URL in your Render Static Site env vars,
+// e.g. https://baramijx-chatbot.onrender.com/api/chat
+const CHAT_API_URL = import.meta.env.VITE_CHAT_API_URL || 'http://localhost:3001/api/chat';
+
 /* ---------------- Chat Section ---------------- */
 function ChatSection({ language }: SectionProps) {
-  const [activeTopic, setActiveTopic] = useState(0);
   const isRTL = language === 'ar';
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const content = {
     ar: {
       title: 'سولوا المرشح ديالكم مباشرة (تفاعل ذكي)',
-      subtitle: 'اضغطوا على أي موضوع كيهّمكم باش تعرفوا الإجابة والموقف المباشر للمهندس عبد المنعم الزويني بكل وضوح.',
+      subtitle: 'اطرحوا أي سؤال عن برنامج المهندس عبد المنعم الزويني وحزب PML، وغادي تجاوبكم المساعدة الرقمية للحملة.',
       chatTitle: 'المستشار التفاعلي للمرشح عبد المنعم الزويني',
       liveChat: 'LIVE CHAT',
-      greeting: 'مرحباً بكم يا أهل دائرتنا الأوفياء بمراكش المنارة. أنا المهندس عبد المنعم الزويني، رهن إشارتكم. سألوني على برنامجي في الصحة، فك العزلة عن العالم القروي، التعليم، أو رؤيتي للجمع بين الفن، الشطرنج والسياسة القريبة من المواطن.',
-      prompt: 'اضغطو على الأزرار في الجانب لطرح الأسئلة.',
+      greeting: 'مرحباً بكم يا أهل دائرتنا الأوفياء بمراكش المنارة. أنا المساعد الرقمي للمهندس عبد المنعم الزويني، رهن إشارتكم. سألوني على برنامجه في الصحة، فك العزلة عن العالم القروي، التعليم، أو رؤيته للسياسة القريبة من المواطن.',
+      placeholder: 'اكتبوا سؤالكم هنا...',
+      send: 'إرسال',
+      sending: 'كنجاوب...',
+      errorMsg: 'وقع خطأ، عاودو المحاولة من فضلكم.',
       reset: 'إعادة تعيين المحادثة',
-      topics: [
-        { label: 'الصحة والكرامة 🏥', response: 'الصحة هي أساس التنمية. التزامي هو تجهيز مستوصفات سيدي الزوين والاوداية بأحدث المعدات الطبية، وتقليص مواعيد الانتظار، وضمان الخدمات الطبية الأولية الجيدة لكل مواطن. الكرامة الإنسانية تبدأ بصحة جيدة.' },
-        { label: 'فك العزلة اللوجستيكية 🛣️', response: 'العزلة اللوجستيكية هي عائق أمام التنمية. سأعمل على تطوير شبكة الطرقات، تحسين خطوط النقل العمومي، وربط الدواوير بمراكش بسلاسة. كل قرية وحي يستحق الوصول السهل إلى الخدمات الأساسية.' },
-        { label: 'التعليم والحد من الهدر 🏫', response: 'التعليم هو مفتاح المستقبل. سأركز على تأهيل المدارس القروية، توفير النقل المدرسي للفتيات، ودعم المعلمين. الهدر المدرسي يجب أن ينتهي، وكل طفل يستحق فرصة تعليمية عادلة.' },
-        { label: 'الشطرنج والمسرح والسياسة 🎭', response: 'الفن والرياضة والثقافة جزء من هويتنا. أؤمن بأن السياسة يجب أن تكون قريبة من الناس، وأن الفن والرياضة يعززان الوعي المدني. سأدعم المراكز الثقافية والرياضية المحلية.' },
+      suggestions: [
+        'شنو برنامجكم فالصحة؟',
+        'كيفاش غادي تحلو مشكل العزلة؟',
+        'شنو غاديين تديرو للتعليم؟',
+        'شنو رؤيتكم للشباب والتشغيل؟',
       ],
     },
     fr: {
       title: 'Posez vos questions au candidat (Interaction intelligente)',
-      subtitle: 'Cliquez sur n\'importe quel sujet pour connaître la réponse et la position directe de l\'ingénieur Abdelmounaim Zouini.',
+      subtitle: 'Posez n\'importe quelle question sur le programme d\'Abdelmounaim Zouini et le parti PML, l\'assistant numérique de la campagne vous répondra.',
       chatTitle: 'Conseiller interactif du candidat Abdelmounaim Zouini',
       liveChat: 'CHAT EN DIRECT',
-      greeting: 'Bienvenue, citoyens de la circonscription de Marrakech-Menara. Je suis l\'ingénieur Abdelmounaim Zouini, à votre service. Posez-moi des questions sur mon programme de santé, de lutte contre l\'isolement rural, d\'éducation, ou ma vision d\'une politique de proximité.',
-      prompt: 'Cliquez sur les boutons pour poser vos questions.',
+      greeting: 'Bienvenue, citoyens de la circonscription de Marrakech-Menara. Je suis l\'assistant numérique de l\'ingénieur Abdelmounaim Zouini, à votre service. Posez-moi des questions sur son programme de santé, de lutte contre l\'isolement rural, d\'éducation, ou sa vision d\'une politique de proximité.',
+      placeholder: 'Écrivez votre question ici...',
+      send: 'Envoyer',
+      sending: 'Réponse en cours...',
+      errorMsg: 'Une erreur est survenue, veuillez réessayer.',
       reset: 'Réinitialiser la conversation',
-      topics: [
-        { label: 'Santé et Dignité 🏥', response: 'La santé est la base du développement. Je m\'engage à équiper les dispensaires de Sidi Zouine et Oudaïa, réduire les délais d\'attente, et garantir des services de santé primaire de qualité pour chaque citoyen. La dignité humaine commence par une bonne santé.' },
-        { label: 'Briser l\'isolement logistique 🛣️', response: 'L\'isolement logistique est un obstacle au développement. Je travaillerai à améliorer le réseau routier, les transports publics, et connecter les villages à Marrakech. Chaque communauté mérite l\'accès facile aux services essentiels.' },
-        { label: 'Éducation et Réduction de l\'abandon 🏫', response: 'L\'éducation est la clé de l\'avenir. Je me concentrerai sur la réhabilitation des écoles rurales, le transport scolaire pour les filles, et le soutien aux enseignants. Chaque enfant mérite une chance éducative équitable.' },
-        { label: 'Échecs, Théâtre et Politique 🎭', response: 'L\'art, le sport et la culture font partie de notre identité. Je crois que la politique doit être proche des gens, et que l\'art et le sport renforcent la conscience civique. Je soutiens les centres culturels et sportifs locaux.' },
+      suggestions: [
+        'Quel est votre programme santé ?',
+        'Comment allez-vous résoudre l\'isolement ?',
+        'Que prévoyez-vous pour l\'éducation ?',
+        'Quelle est votre vision pour les jeunes ?',
       ],
     },
     en: {
       title: 'Ask Your Candidate Directly (Smart QA)',
-      subtitle: 'Click on any topic of interest to see Engineer Abdelmounaim Zouini\'s direct, transparent position.',
+      subtitle: 'Ask anything about Engineer Abdelmounaim Zouini\'s program and the PML party, and the campaign\'s digital assistant will answer.',
       chatTitle: 'Interactive Advisor for Candidate Abdelmounaim Zouini',
       liveChat: 'LIVE CHAT',
-      greeting: 'Welcome, dear citizens of Marrakech-Menara. I am Engineer Abdelmounaim Zouini, at your service. Ask me about healthcare, rural infrastructure, education, or how I combine art, chess, and proximity politics.',
-      prompt: 'Click the buttons on the side to ask questions.',
+      greeting: 'Welcome, dear citizens of Marrakech-Menara. I am the digital assistant for Engineer Abdelmounaim Zouini, at your service. Ask me about his healthcare plan, rural infrastructure, education, or his vision for proximity politics.',
+      placeholder: 'Type your question here...',
+      send: 'Send',
+      sending: 'Replying...',
+      errorMsg: 'Something went wrong, please try again.',
       reset: 'Reset Conversation',
-      topics: [
-        { label: 'Health and Dignity 🏥', response: 'Health is the foundation of development. I commit to equipping health centers in Sidi Zouine and Oudaïa, reducing wait times, and ensuring quality primary healthcare for every citizen. Human dignity begins with good health.' },
-        { label: 'Breaking Logistical Isolation 🛣️', response: 'Logistical isolation is an obstacle to development. I will work to improve road networks, public transport, and connect villages to Marrakech. Every community deserves easy access to essential services.' },
-        { label: 'Education and Dropout Reduction 🏫', response: 'Education is the key to the future. I will focus on rehabilitating rural schools, school transport for girls, and teacher support. Every child deserves an equal educational opportunity.' },
-        { label: 'Chess, Theater and Politics 🎭', response: 'Art, sports, and culture are part of our identity. I believe politics must be close to people, and that art and sports strengthen civic awareness. I support local cultural and sports centers.' },
+      suggestions: [
+        'What is your healthcare plan?',
+        'How will you fix the isolation problem?',
+        'What are your plans for education?',
+        'What is your vision for youth?',
       ],
     },
   };
 
   const c = content[language];
-  const topic = c.topics[activeTopic];
+
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: 'assistant', text: content[language].greeting },
+  ]);
+
+  // Reset the greeting when the language changes
+  useEffect(() => {
+    setMessages([{ role: 'assistant', text: content[language].greeting }]);
+    setError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
+  async function sendMessage(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
+
+    setMessages((prev) => [...prev, { role: 'user', text: trimmed }]);
+    setInput('');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(CHAT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmed, language }),
+      });
+
+      if (!res.ok) throw new Error('Request failed');
+
+      const data = await res.json();
+      setMessages((prev) => [...prev, { role: 'assistant', text: data.reply }]);
+    } catch (err) {
+      setError(c.errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    sendMessage(input);
+  }
+
+  function handleReset() {
+    setMessages([{ role: 'assistant', text: c.greeting }]);
+    setError(null);
+    setInput('');
+  }
 
   return (
     <section id="chat" className="py-12 sm:py-16 md:py-24 bg-background">
@@ -444,62 +518,97 @@ function ChatSection({ language }: SectionProps) {
 
         <div className="max-w-4xl mx-auto">
           <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
-            <div className="bg-primary text-primary-foreground p-5 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-bold">{c.chatTitle}</h3>
-              <p className="text-sm text-primary-foreground/80 mt-1">{c.liveChat}</p>
-            </div>
-
-            <div className="p-5 sm:p-8 space-y-5 sm:space-y-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CandidateAvatarIcon className="w-8 h-8 shrink-0" />
-                  <span className="font-semibold text-foreground text-sm sm:text-base">
-                    {language === 'ar' ? 'عبد المنعم الزويني:' : language === 'fr' ? 'Abdelmounaim Zouini:' : 'Abdelmounaim Zouini:'}
-                  </span>
-                </div>
-                <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg text-sm sm:text-base">{topic.response}</p>
+            <div className="bg-primary text-primary-foreground p-5 sm:p-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold">{c.chatTitle}</h3>
+                <p className="text-sm text-primary-foreground/80 mt-1">{c.liveChat}</p>
               </div>
-
-              {activeTopic === 0 && (
-                <div className="space-y-3 pt-4 border-t border-border">
-                  <div className="flex items-center gap-2">
-                    <CandidateAvatarIcon className="w-8 h-8 shrink-0" />
-                    <span className="font-semibold text-foreground text-sm sm:text-base">
-                      {language === 'ar' ? 'عبد المنعم الزويني:' : language === 'fr' ? 'Abdelmounaim Zouini:' : 'Abdelmounaim Zouini:'}
-                    </span>
-                  </div>
-                  <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg text-sm sm:text-base">{c.greeting}</p>
-                  <p className="text-sm text-muted-foreground italic pt-2">{c.prompt}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="bg-muted/50 p-5 sm:p-6 border-t border-border">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {c.topics.map((t, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveTopic(idx)}
-                    className={`p-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
-                      isRTL ? 'text-right' : 'text-left'
-                    } ${
-                      activeTopic === idx
-                        ? 'bg-accent text-accent-foreground shadow-md'
-                        : 'bg-card text-foreground border border-border hover:border-accent'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
               <button
-                onClick={() => setActiveTopic(0)}
-                className="w-full mt-4 px-4 py-2.5 sm:py-2 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors duration-200"
+                onClick={handleReset}
+                className="text-xs sm:text-sm text-primary-foreground/70 hover:text-primary-foreground border border-primary-foreground/30 rounded-lg px-3 py-1.5 transition-colors duration-200 shrink-0"
               >
                 {c.reset}
               </button>
             </div>
+
+            {/* Messages */}
+            <div
+              className="p-5 sm:p-8 space-y-4 sm:space-y-5 max-h-[28rem] overflow-y-auto"
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
+              {messages.map((msg, idx) => (
+                <div key={idx} className="space-y-2">
+                  {msg.role === 'assistant' ? (
+                    <div className="flex items-start gap-2">
+                      <CandidateAvatarIcon className="w-8 h-8 shrink-0 mt-1" />
+                      <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg text-sm sm:text-base flex-1">
+                        {msg.text}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex justify-end">
+                      <p className="text-primary-foreground leading-relaxed bg-primary p-4 rounded-lg text-sm sm:text-base max-w-[85%]">
+                        {msg.text}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {isLoading && (
+                <div className="flex items-start gap-2">
+                  <CandidateAvatarIcon className="w-8 h-8 shrink-0 mt-1 animate-pulse" />
+                  <p className="text-muted-foreground italic bg-muted/30 p-4 rounded-lg text-sm sm:text-base">
+                    {c.sending}
+                  </p>
+                </div>
+              )}
+
+              {error && (
+                <p className="text-destructive text-sm text-center">{error}</p>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Quick suggestions */}
+            <div className="px-5 sm:px-8 pb-2">
+              <div className="flex flex-wrap gap-2">
+                {c.suggestions.map((s, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => sendMessage(s)}
+                    disabled={isLoading}
+                    className="text-xs sm:text-sm px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:border-accent hover:text-foreground transition-colors duration-200 disabled:opacity-50"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Input */}
+            <form
+              onSubmit={handleSubmit}
+              className="bg-muted/50 p-5 sm:p-6 border-t border-border flex gap-3"
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={c.placeholder}
+                disabled={isLoading}
+                className="flex-1 bg-card border border-border rounded-lg px-4 py-2.5 text-sm sm:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="px-5 py-2.5 rounded-lg font-semibold text-sm sm:text-base bg-accent text-accent-foreground hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 shrink-0"
+              >
+                {c.send}
+              </button>
+            </form>
           </div>
         </div>
       </div>
