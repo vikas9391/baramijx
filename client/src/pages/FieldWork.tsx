@@ -77,19 +77,19 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-24">
+      <section className="bg-primary text-primary-foreground py-12 sm:py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">{c.title}</h1>
-          <div className="h-1 bg-accent w-20 mb-6"></div>
-          <p className="text-lg text-primary-foreground/80 max-w-2xl">{c.subtitle}</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight">{c.title}</h1>
+          <div className="h-1 bg-accent w-16 sm:w-20 mb-4 sm:mb-6"></div>
+          <p className="text-base sm:text-lg text-primary-foreground/80 max-w-2xl">{c.subtitle}</p>
         </div>
       </section>
 
       {/* Timeline Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="section-title mb-2">{c.timelineTitle}</h2>
-          <div className="h-1 bg-accent w-20 mb-12"></div>
+          <div className="h-1 bg-accent w-16 sm:w-20 mb-8 sm:mb-12"></div>
 
           <div className="max-w-3xl mx-auto">
             {/* Timeline */}
@@ -102,12 +102,12 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
                 {c.events.map((event, idx) => (
                   <div
                     key={idx}
-                    className={`relative pl-20 md:pl-0 ${
+                    className={`relative pl-16 sm:pl-20 md:pl-0 ${
                       idx % 2 === 0 ? 'md:pr-1/2 md:text-right' : 'md:pl-1/2'
                     }`}
                   >
                     {/* Timeline Dot */}
-                    <div className="absolute left-0 md:left-1/2 top-2 w-8 h-8 bg-accent rounded-full border-4 border-background flex items-center justify-center text-sm transform md:-translate-x-1/2">
+                    <div className="absolute left-0 md:left-1/2 top-2 w-7 h-7 sm:w-8 sm:h-8 bg-accent rounded-full border-4 border-background flex items-center justify-center text-sm transform md:-translate-x-1/2">
                       {getEventIcon(event.type)}
                     </div>
 
@@ -117,7 +117,7 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
                         idx % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
                       }`}
                     >
-                      <div className="p-6 flex-1 flex flex-col gap-3">
+                      <div className="p-5 sm:p-6 flex-1 flex flex-col gap-3">
                         {/* Event Type Badge */}
                         <div>
                           <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full">
@@ -141,7 +141,7 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
                           </span>
                         </div>
 
-                        <h3 className="text-xl font-bold text-foreground">
+                        <h3 className="text-lg sm:text-xl font-bold text-foreground">
                           {event.title}
                         </h3>
 
@@ -154,14 +154,14 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
                           </p>
                         </div>
 
-                        <p className="text-foreground/80 leading-relaxed">
+                        <p className="text-foreground/80 leading-relaxed text-sm sm:text-base">
                           {event.description}
                         </p>
                       </div>
 
                       {/* Event Image */}
                       {event.image && (
-                        <div className="w-full sm:w-56 md:w-72 h-56 sm:h-auto shrink-0 order-first sm:order-last">
+                        <div className="w-full sm:w-56 md:w-72 h-48 sm:h-auto shrink-0 order-first sm:order-last">
                           <img
                             src={event.image}
                             alt={event.title}
@@ -179,16 +179,16 @@ export default function FieldWorkPage({ language }: FieldWorkPageProps) {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
+      <section className="py-12 sm:py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
             {language === 'ar'
               ? 'هل تريد لقاء المرشح؟'
               : language === 'fr'
               ? 'Voulez-vous rencontrer le candidat?'
               : 'Want to meet the candidate?'}
           </h2>
-          <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-primary-foreground/80 mb-6 sm:mb-8 max-w-2xl mx-auto">
             {language === 'ar'
               ? 'سجل شكايتك أو اقترحاتك وسيتواصل معك الفريق الميداني'
               : language === 'fr'

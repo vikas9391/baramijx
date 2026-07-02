@@ -130,16 +130,16 @@ function ProgramSection({ language }: SectionProps) {
   const icons = [HealthIcon, InfrastructureIcon, EducationIcon, YouthIcon];
 
   return (
-    <section id="program" className="py-16 md:py-24 bg-background">
+    <section id="program" className="py-12 sm:py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-accent font-semibold mb-2">{c.partyName}</p>
-          <h2 className="section-title">{c.title}</h2>
-          <div className="h-1 bg-accent w-20 mx-auto mb-6"></div>
-          <p className="section-subtitle max-w-2xl mx-auto">{c.subtitle}</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-accent font-semibold mb-2 text-sm sm:text-base">{c.partyName}</p>
+          <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.title}</h2>
+          <div className="h-1 bg-accent w-16 sm:w-20 mx-auto mb-4 sm:mb-6"></div>
+          <p className="section-subtitle max-w-2xl mx-auto text-sm sm:text-base">{c.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {c.programs.map((program, idx) => {
             const Icon = icons[idx];
             return (
@@ -306,20 +306,20 @@ function RegionalSection({ language }: SectionProps) {
   const region = c.regions[activeRegion];
 
   return (
-    <section id="regional" className="py-16 md:py-24 bg-primary text-primary-foreground">
+    <section id="regional" className="py-12 sm:py-16 md:py-24 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="section-title text-primary-foreground">{c.title}</h2>
-          <div className="h-1 bg-accent w-20 mx-auto mb-6"></div>
-          <p className="section-subtitle text-primary-foreground/80 max-w-2xl mx-auto">{c.subtitle}</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="section-title text-primary-foreground text-xl sm:text-2xl md:text-3xl">{c.title}</h2>
+          <div className="h-1 bg-accent w-16 sm:w-20 mx-auto mb-4 sm:mb-6"></div>
+          <p className="section-subtitle text-primary-foreground/80 max-w-2xl mx-auto text-sm sm:text-base">{c.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {c.regions.map((r, idx) => (
             <button
               key={idx}
               onClick={() => setActiveRegion(idx)}
-              className={`p-4 rounded-lg font-semibold transition-all duration-300 ${
+              className={`p-3 sm:p-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
                 activeRegion === idx
                   ? 'bg-accent text-accent-foreground shadow-lg'
                   : 'bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20'
@@ -330,31 +330,31 @@ function RegionalSection({ language }: SectionProps) {
           ))}
         </div>
 
-        <div className="bg-primary-foreground/5 rounded-lg p-8 border border-primary-foreground/20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-primary-foreground/5 rounded-lg p-5 sm:p-8 border border-primary-foreground/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-accent">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-accent">
                 {language === 'ar' ? 'المشاكل المرصودة بالمنطقة:' : language === 'fr' ? 'Problèmes identifiés:' : 'Identified Problems:'}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5 sm:space-y-3">
                 {region.problems.map((problem, idx) => (
                   <li key={idx} className="flex gap-3">
                     <span className="text-accent font-bold">•</span>
-                    <span className="text-primary-foreground/90">{problem}</span>
+                    <span className="text-primary-foreground/90 text-sm sm:text-base">{problem}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-accent">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-accent">
                 {language === 'ar' ? 'حلولنا والتزاماتنا:' : language === 'fr' ? 'Nos solutions:' : 'Our Solutions:'}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5 sm:space-y-3">
                 {region.solutions.map((solution, idx) => (
                   <li key={idx} className="flex gap-3">
                     <span className="text-accent font-bold">✓</span>
-                    <span className="text-primary-foreground/90">{solution}</span>
+                    <span className="text-primary-foreground/90 text-sm sm:text-base">{solution}</span>
                   </li>
                 ))}
               </ul>
@@ -380,6 +380,7 @@ function CandidateAvatarIcon({ className }: { className?: string }) {
 /* ---------------- Chat Section ---------------- */
 function ChatSection({ language }: SectionProps) {
   const [activeTopic, setActiveTopic] = useState(0);
+  const isRTL = language === 'ar';
 
   const content = {
     ar: {
@@ -433,53 +434,55 @@ function ChatSection({ language }: SectionProps) {
   const topic = c.topics[activeTopic];
 
   return (
-    <section id="chat" className="py-16 md:py-24 bg-background">
+    <section id="chat" className="py-12 sm:py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="section-title">{c.title}</h2>
-          <div className="h-1 bg-accent w-20 mx-auto mb-6"></div>
-          <p className="section-subtitle max-w-2xl mx-auto">{c.subtitle}</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.title}</h2>
+          <div className="h-1 bg-accent w-16 sm:w-20 mx-auto mb-4 sm:mb-6"></div>
+          <p className="section-subtitle max-w-2xl mx-auto text-sm sm:text-base">{c.subtitle}</p>
         </div>
 
         <div className="max-w-4xl mx-auto">
           <div className="bg-card rounded-lg shadow-lg border border-border overflow-hidden">
-            <div className="bg-primary text-primary-foreground p-6">
-              <h3 className="text-xl font-bold">{c.chatTitle}</h3>
+            <div className="bg-primary text-primary-foreground p-5 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold">{c.chatTitle}</h3>
               <p className="text-sm text-primary-foreground/80 mt-1">{c.liveChat}</p>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-5 sm:p-8 space-y-5 sm:space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <CandidateAvatarIcon className="w-8 h-8" />
-                  <span className="font-semibold text-foreground">
+                  <CandidateAvatarIcon className="w-8 h-8 shrink-0" />
+                  <span className="font-semibold text-foreground text-sm sm:text-base">
                     {language === 'ar' ? 'عبد المنعم الزويني:' : language === 'fr' ? 'Abdelmounaim Zouini:' : 'Abdelmounaim Zouini:'}
                   </span>
                 </div>
-                <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg">{topic.response}</p>
+                <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg text-sm sm:text-base">{topic.response}</p>
               </div>
 
               {activeTopic === 0 && (
                 <div className="space-y-3 pt-4 border-t border-border">
                   <div className="flex items-center gap-2">
-                    <CandidateAvatarIcon className="w-8 h-8" />
-                    <span className="font-semibold text-foreground">
+                    <CandidateAvatarIcon className="w-8 h-8 shrink-0" />
+                    <span className="font-semibold text-foreground text-sm sm:text-base">
                       {language === 'ar' ? 'عبد المنعم الزويني:' : language === 'fr' ? 'Abdelmounaim Zouini:' : 'Abdelmounaim Zouini:'}
                     </span>
                   </div>
-                  <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg">{c.greeting}</p>
+                  <p className="text-foreground/80 leading-relaxed bg-muted/30 p-4 rounded-lg text-sm sm:text-base">{c.greeting}</p>
                   <p className="text-sm text-muted-foreground italic pt-2">{c.prompt}</p>
                 </div>
               )}
             </div>
 
-            <div className="bg-muted/50 p-6 border-t border-border">
+            <div className="bg-muted/50 p-5 sm:p-6 border-t border-border">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {c.topics.map((t, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveTopic(idx)}
-                    className={`p-3 rounded-lg font-semibold transition-all duration-300 text-left ${
+                    className={`p-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+                      isRTL ? 'text-right' : 'text-left'
+                    } ${
                       activeTopic === idx
                         ? 'bg-accent text-accent-foreground shadow-md'
                         : 'bg-card text-foreground border border-border hover:border-accent'
@@ -492,7 +495,7 @@ function ChatSection({ language }: SectionProps) {
 
               <button
                 onClick={() => setActiveTopic(0)}
-                className="w-full mt-4 px-4 py-2 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors duration-200"
+                className="w-full mt-4 px-4 py-2.5 sm:py-2 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors duration-200"
               >
                 {c.reset}
               </button>

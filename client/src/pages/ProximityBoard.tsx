@@ -211,23 +211,23 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-24">
+      <section className="bg-primary text-primary-foreground py-12 sm:py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">{c.title}</h1>
-          <div className="h-1 bg-accent w-20 mb-6"></div>
-          <p className="text-lg text-primary-foreground/80 max-w-2xl">{c.subtitle}</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight">{c.title}</h1>
+          <div className="h-1 bg-accent w-16 sm:w-20 mb-4 sm:mb-6"></div>
+          <p className="text-base sm:text-lg text-primary-foreground/80 max-w-2xl">{c.subtitle}</p>
         </div>
       </section>
 
       {/* Form Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
-            <h2 className="section-title mb-2">{c.formTitle}</h2>
-            <div className="h-1 bg-accent w-20 mb-4"></div>
-            <p className="section-subtitle mb-8">{c.formDescription}</p>
+            <h2 className="section-title mb-2 text-xl sm:text-2xl md:text-3xl">{c.formTitle}</h2>
+            <div className="h-1 bg-accent w-16 sm:w-20 mb-4"></div>
+            <p className="section-subtitle mb-6 sm:mb-8 text-sm sm:text-base">{c.formDescription}</p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
               <div>
                 <input
                   type="text"
@@ -236,7 +236,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-base"
                 />
               </div>
 
@@ -248,7 +248,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   onChange={(e) =>
                     setFormData({ ...formData, commune: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-base"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                     setFormData({ ...formData, description: e.target.value })
                   }
                   rows={5}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none text-base"
                 />
               </div>
 
@@ -273,20 +273,20 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
       </section>
 
       {/* Issues Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-12 sm:py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="section-title mb-2">{c.issuesTitle}</h2>
-          <div className="h-1 bg-accent w-20 mb-4"></div>
-          <p className="section-subtitle mb-12">{c.issuesSubtitle}</p>
+          <h2 className="section-title mb-2 text-xl sm:text-2xl md:text-3xl">{c.issuesTitle}</h2>
+          <div className="h-1 bg-accent w-16 sm:w-20 mb-4"></div>
+          <p className="section-subtitle mb-8 sm:mb-12 text-sm sm:text-base">{c.issuesSubtitle}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {issues.map((issue) => {
               const hasSupported = supportedIssues.includes(issue.id);
 
               return (
                 <div
                   key={issue.id}
-                  className="bg-card rounded-lg p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-300"
+                  className="bg-card rounded-lg p-5 sm:p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-300"
                 >
                   {/* Header */}
                   <div className="mb-4 pb-4 border-b border-border">
@@ -328,7 +328,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   <button
                     onClick={() => handleSupport(issue.id)}
                     disabled={hasSupported}
-                    className={`w-full py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${
+                    className={`w-full py-2.5 sm:py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${
                       hasSupported
                         ? 'bg-muted text-muted-foreground cursor-not-allowed'
                         : 'bg-accent text-accent-foreground hover:opacity-90'

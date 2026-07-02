@@ -415,24 +415,24 @@ export default function ProgramPage({ language }: ProgramPageProps) {
   return (
     <div dir={dir} className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20 md:py-28">
+      <section className="bg-primary text-primary-foreground py-12 sm:py-16 md:py-28">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-3">{c.title}</h1>
-          <div className="h-1 w-20 bg-accent mb-6" />
-          <p className="text-lg text-primary-foreground/80 max-w-2xl leading-relaxed">{c.subtitle}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight mb-3">{c.title}</h1>
+          <div className="h-1 w-16 sm:w-20 bg-accent mb-4 sm:mb-6" />
+          <p className="text-base sm:text-lg text-primary-foreground/80 max-w-2xl leading-relaxed">{c.subtitle}</p>
         </div>
       </section>
 
       {/* Citizen Voices / Testimonials Section */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-12 sm:py-16 md:py-28 bg-background">
         <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="section-title">{c.testimonialsTitle}</h2>
-            <div className="h-1 w-20 bg-accent mx-auto my-4" />
-            <p className="section-subtitle max-w-2xl mx-auto">{c.testimonialsSubtitle}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.testimonialsTitle}</h2>
+            <div className="h-1 w-16 sm:w-20 bg-accent mx-auto my-3 sm:my-4" />
+            <p className="section-subtitle max-w-2xl mx-auto text-sm sm:text-base">{c.testimonialsSubtitle}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
             {c.reports.map((report) => {
               const hasReported = reportedIds.includes(report.id);
               const affected = reportAffected[report.id] ?? 0;
@@ -440,7 +440,7 @@ export default function ProgramPage({ language }: ProgramPageProps) {
               return (
                 <div
                   key={report.id}
-                  className="flex flex-col bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-200"
+                  className="flex flex-col bg-card rounded-xl p-5 sm:p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-sm shrink-0">
@@ -495,12 +495,12 @@ export default function ProgramPage({ language }: ProgramPageProps) {
       </section>
 
       {/* Priorities Section */}
-      <section className="py-20 md:py-28 bg-muted/30">
+      <section className="py-12 sm:py-16 md:py-28 bg-muted/30">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="section-title mb-2">{c.prioritiesTitle}</h2>
-          <div className="h-1 w-20 bg-accent mb-12" />
+          <h2 className="section-title mb-2 text-xl sm:text-2xl md:text-3xl">{c.prioritiesTitle}</h2>
+          <div className="h-1 w-16 sm:w-20 bg-accent mb-8 sm:mb-12" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {c.priorities.map((priority) => {
               const Icon = ICONS[priority.id];
               return (
@@ -509,8 +509,8 @@ export default function ProgramPage({ language }: ProgramPageProps) {
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-foreground mb-2 leading-snug">{priority.title}</h3>
-                    <p className="text-foreground/75 leading-relaxed text-[15px]">{priority.description}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-foreground mb-2 leading-snug">{priority.title}</h3>
+                    <p className="text-foreground/75 leading-relaxed text-sm sm:text-[15px]">{priority.description}</p>
                   </div>
                 </div>
               );
@@ -520,15 +520,15 @@ export default function ProgramPage({ language }: ProgramPageProps) {
       </section>
 
       {/* Voting Section */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-12 sm:py-16 md:py-28 bg-background">
         <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="section-title">{c.votingTitle}</h2>
-            <div className="h-1 w-20 bg-accent mx-auto my-4" />
-            <p className="section-subtitle">{c.votingSubtitle}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="section-title text-xl sm:text-2xl md:text-3xl">{c.votingTitle}</h2>
+            <div className="h-1 w-16 sm:w-20 bg-accent mx-auto my-3 sm:my-4" />
+            <p className="section-subtitle text-sm sm:text-base">{c.votingSubtitle}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {c.votingCards.map((card) => {
               const Icon = ICONS[card.id];
               const voteCount = votes[card.id];
@@ -538,7 +538,7 @@ export default function ProgramPage({ language }: ProgramPageProps) {
               return (
                 <div
                   key={card.id}
-                  className="flex flex-col bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                  className="flex flex-col bg-card rounded-xl p-5 sm:p-6 shadow-sm border border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <div className="w-12 h-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6" />

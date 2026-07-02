@@ -382,21 +382,22 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
   return (
     <div className="min-h-screen bg-background text-foreground" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Hero */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-24">
+      <section className="bg-primary text-primary-foreground py-12 sm:py-16 md:py-24">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide mb-4">{c.eyebrow}</p>
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">{c.heroTitle}</h1>
-          <p className="text-lg text-primary-foreground/80 mb-8">{c.heroSubtitle}</p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a href="#pricing" className="cta-button">
+          <p className="text-accent font-semibold text-xs sm:text-sm uppercase tracking-wide mb-3 sm:mb-4">{c.eyebrow}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight">{c.heroTitle}</h1>
+          <p className="text-base sm:text-lg text-primary-foreground/80 mb-6 sm:mb-8">{c.heroSubtitle}</p>
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <a href="#pricing" className="cta-button w-full sm:w-auto text-center">
               {c.exploreBtn}
             </a>
-            <Link href="/candidate" className="px-6 py-3 rounded-lg border border-primary-foreground/30 font-semibold hover:bg-primary-foreground/10 transition-colors">
+            <Link href="/candidate" className="w-full sm:w-auto px-6 py-3 rounded-lg border border-primary-foreground/30 font-semibold hover:bg-primary-foreground/10 transition-colors text-center">
               {c.demoBtn}
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mt-16 max-w-2xl mx-auto">
+          {/* Stats: stack on very small screens, 3-up from sm onward */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4 mt-12 sm:mt-16 max-w-2xl mx-auto">
             {c.stats.map((stat, idx) => (
               <div key={idx}>
                 <div className="text-3xl md:text-4xl font-bold text-accent">{stat.value}</div>
@@ -408,17 +409,17 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
       </section>
 
       {/* Strategic Framework */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide mb-2 text-center">{c.frameworkEyebrow}</p>
+          <p className="text-accent font-semibold text-xs sm:text-sm uppercase tracking-wide mb-2 text-center">{c.frameworkEyebrow}</p>
           <h2 className="section-title text-center mb-4">{c.frameworkTitle}</h2>
-          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-12">{c.frameworkSubtitle}</p>
+          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">{c.frameworkSubtitle}</p>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
             {c.framework.map((item, idx) => (
-              <div key={idx} className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+              <div key={idx} className="bg-card rounded-lg p-5 sm:p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                <p className="text-foreground/70 leading-relaxed">{item.desc}</p>
+                <p className="text-foreground/70 leading-relaxed text-sm sm:text-base">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -426,36 +427,36 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
       </section>
 
       {/* Why Digital Campaign */}
-      <section className="py-16 md:py-24 bg-card">
+      <section className="py-12 sm:py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide mb-2 text-center">{c.whyEyebrow}</p>
-          <h2 className="section-title text-center mb-12">{c.whyTitle}</h2>
+          <p className="text-accent font-semibold text-xs sm:text-sm uppercase tracking-wide mb-2 text-center">{c.whyEyebrow}</p>
+          <h2 className="section-title text-center mb-8 sm:mb-12">{c.whyTitle}</h2>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 mb-8">
             {c.whyPoints.map((point, idx) => (
               <div key={idx}>
                 <h3 className="text-lg font-bold mb-2">{point.title}</h3>
-                <p className="text-foreground/70 leading-relaxed">{point.desc}</p>
+                <p className="text-foreground/70 leading-relaxed text-sm sm:text-base">{point.desc}</p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-foreground/80 italic border-t border-border pt-8">{c.whyClosing}</p>
+          <p className="text-center text-foreground/80 italic border-t border-border pt-6 sm:pt-8 text-sm sm:text-base">{c.whyClosing}</p>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-16 md:py-24 bg-background">
+      <section id="pricing" className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide mb-2 text-center">{c.pricingEyebrow}</p>
+          <p className="text-accent font-semibold text-xs sm:text-sm uppercase tracking-wide mb-2 text-center">{c.pricingEyebrow}</p>
           <h2 className="section-title text-center mb-4">{c.pricingTitle}</h2>
-          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-12">{c.pricingSubtitle}</p>
+          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">{c.pricingSubtitle}</p>
 
-          <div className="grid md:grid-cols-3 gap-6 items-start">
+          <div className="grid md:grid-cols-3 gap-5 sm:gap-6 items-start">
             {c.tiers.map((tier, idx) => (
               <div
                 key={idx}
-                className={`bg-card rounded-lg p-6 border shadow-sm flex flex-col h-full ${
+                className={`bg-card rounded-lg p-5 sm:p-6 border shadow-sm flex flex-col h-full ${
                   tier.badge ? 'border-accent shadow-lg md:-translate-y-2' : 'border-border'
                 }`}
               >
@@ -467,7 +468,7 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
                 <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
                 <p className="text-foreground/70 text-sm leading-relaxed mb-4">{tier.desc}</p>
                 <div className="mb-1">
-                  <span className="text-3xl font-bold">MAD {tier.price}</span>
+                  <span className="text-2xl sm:text-3xl font-bold">MAD {tier.price}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">{tier.packageLabel}</p>
 
@@ -490,15 +491,15 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
       </section>
 
       {/* Budget Estimator */}
-      <section className="py-16 md:py-24 bg-card">
+      <section className="py-12 sm:py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4 max-w-4xl">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide mb-2 text-center">{c.estimatorEyebrow}</p>
+          <p className="text-accent font-semibold text-xs sm:text-sm uppercase tracking-wide mb-2 text-center">{c.estimatorEyebrow}</p>
           <h2 className="section-title text-center mb-4">{c.estimatorTitle}</h2>
-          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-12">{c.estimatorSubtitle}</p>
+          <p className="text-foreground/70 text-center max-w-2xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">{c.estimatorSubtitle}</p>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Controls */}
-            <div className="space-y-8">
+            <div className="space-y-7 sm:space-y-8">
               {/* Voter Size */}
               <div>
                 <div className="flex items-center justify-between mb-1">
@@ -512,7 +513,7 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
                   step={5000}
                   value={voterSize}
                   onChange={(e) => setVoterSize(Number(e.target.value))}
-                  className="w-full accent-accent"
+                  className="w-full accent-accent h-2"
                 />
                 <p className="text-xs text-muted-foreground mt-1">{c.voterHint}</p>
               </div>
@@ -525,7 +526,7 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
                     <button
                       key={idx}
                       onClick={() => setSmsWave(idx)}
-                      className={`w-full text-start px-4 py-2 rounded-lg border text-sm transition-colors ${
+                      className={`w-full text-start px-4 py-2.5 sm:py-2 rounded-lg border text-sm transition-colors ${
                         smsWave === idx
                           ? 'bg-accent/10 border-accent text-accent font-semibold'
                           : 'border-border text-foreground/70 hover:bg-accent/5'
@@ -545,7 +546,7 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
                     <button
                       key={idx}
                       onClick={() => setFlyers(idx)}
-                      className={`w-full text-start px-4 py-2 rounded-lg border text-sm transition-colors ${
+                      className={`w-full text-start px-4 py-2.5 sm:py-2 rounded-lg border text-sm transition-colors ${
                         flyers === idx
                           ? 'bg-accent/10 border-accent text-accent font-semibold'
                           : 'border-border text-foreground/70 hover:bg-accent/5'
@@ -565,7 +566,7 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
                     <button
                       key={idx}
                       onClick={() => setMediaPR(idx === 0)}
-                      className={`w-full text-start px-4 py-2 rounded-lg border text-sm transition-colors ${
+                      className={`w-full text-start px-4 py-2.5 sm:py-2 rounded-lg border text-sm transition-colors ${
                         (idx === 0) === mediaPR
                           ? 'bg-accent/10 border-accent text-accent font-semibold'
                           : 'border-border text-foreground/70 hover:bg-accent/5'
@@ -578,11 +579,11 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
               </div>
             </div>
 
-            {/* Summary */}
-            <div className="bg-primary text-primary-foreground rounded-lg p-8 flex flex-col justify-center text-center h-fit sticky top-24">
+            {/* Summary — sticky only from md up, stays inline on mobile */}
+            <div className="bg-primary text-primary-foreground rounded-lg p-6 sm:p-8 flex flex-col justify-center text-center h-fit md:sticky md:top-24">
               <p className="text-sm text-primary-foreground/70 mb-2">{c.summaryTitle}</p>
               <p className="text-sm font-semibold mb-4">{c.summarySubtitle}</p>
-              <div className="text-4xl md:text-5xl font-bold text-accent mb-2">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-accent mb-2">
                 MAD {total.toLocaleString()}
               </div>
               <p className="text-sm text-primary-foreground/70 mb-6">{c.summaryFooter}</p>
@@ -596,11 +597,11 @@ export default function ElectionServicesPage({ language }: ElectionServicesPageP
       </section>
 
       {/* Compliance */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="section-title mb-4">{c.complianceTitle}</h2>
-          <p className="text-foreground/70 mb-8">{c.complianceSubtitle}</p>
-          <div className="flex flex-wrap items-center justify-center gap-6">
+          <p className="text-foreground/70 mb-6 sm:mb-8 text-sm sm:text-base">{c.complianceSubtitle}</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             {c.complianceItems.map((item, idx) => (
               <span key={idx} className="text-sm font-medium text-accent">
                 ✓ {item}
