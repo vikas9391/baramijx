@@ -465,14 +465,21 @@ function ChatSection({ language }: SectionProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  const hasInteracted = useRef(false);
+
+useEffect(() => {
+  // Only auto-scroll after the user has actually sent a message or reset
+  // the chat — never on initial mount or when the language-reset effect
+  // rewrites the greeting.
+  if (!hasInteracted.current) return;
+  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}, [messages, isLoading]);
 
   async function sendMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
-
+    
+    hasInteracted.current = true;
     setMessages((prev) => [...prev, { role: 'user', text: trimmed }]);
     setInput('');
     setIsLoading(true);
@@ -502,6 +509,7 @@ function ChatSection({ language }: SectionProps) {
   }
 
   function handleReset() {
+    hasInteracted.current = true;
     setMessages([{ role: 'assistant', text: c.greeting }]);
     setError(null);
     setInput('');
