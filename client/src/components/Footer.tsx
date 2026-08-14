@@ -8,7 +8,7 @@ interface FooterProps {
 export default function Footer({ language }: FooterProps) {
   const content = {
     ar: {
-      candidateTitle: 'المهندس عبد المنعم الزويني',
+      candidateTitle: 'عبد المنعم الزويني',
       candidateDesc: 'مرشحكم لبرلمان 2026 عن دائرة مراكش المنارة. كفاءة هندسية وتدبيرية في خدمة الصالح العام والتنمية الشاملة.',
       quickLinks: 'بوابات التواصل السريع',
       links: [
@@ -24,11 +24,11 @@ export default function Footer({ language }: FooterProps) {
         'الإنصات الدائم والقرب الميداني',
         'الترافع الجاد بمجلس النواب',
       ],
-      copyright: '© كل الحقوق محفوظة. حملة المهندس عبد المنعم الزويني 2026.',
+      copyright: '© كل الحقوق محفوظة. حملة عبد المنعم الزويني 2026.',
       tagline: 'الالتزام الأخلاقي والكفاءة الميدانية',
     },
     fr: {
-      candidateTitle: 'Ingénieur Abdelmounaim Zouini',
+      candidateTitle: 'Abdelmounaim Zouini',
       candidateDesc: 'Votre candidat au parlement 2026 pour la circonscription de Marrakech-Menara. Compétence technique et gestion au service de l\'intérêt public.',
       quickLinks: 'Liens rapides',
       links: [
@@ -44,11 +44,11 @@ export default function Footer({ language }: FooterProps) {
         'Écoute permanente et proximité de terrain',
         'Plaidoyer sérieux au parlement',
       ],
-      copyright: '© Tous droits réservés. Campagne de l\'ingénieur Abdelmounaim Zouini 2026.',
+      copyright: '© Tous droits réservés. Campagne d\'Abdelmounaim Zouini 2026.',
       tagline: 'Engagement éthique et compétence de terrain',
     },
     en: {
-      candidateTitle: 'Engineer Abdelmounaim Zouini',
+      candidateTitle: 'Abdelmounaim Zouini',
       candidateDesc: 'Your candidate for parliament 2026 in Marrakech-Menara district. Technical expertise and management in service of public interest.',
       quickLinks: 'Quick Links',
       links: [
@@ -64,7 +64,7 @@ export default function Footer({ language }: FooterProps) {
         'Constant listening and field proximity',
         'Serious advocacy in parliament',
       ],
-      copyright: '© All rights reserved. Campaign of Engineer Abdelmounaim Zouini 2026.',
+      copyright: '© All rights reserved. Campaign of Abdelmounaim Zouini 2026.',
       tagline: 'Ethical commitment and field competence',
     },
   };

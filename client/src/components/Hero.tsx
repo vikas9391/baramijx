@@ -15,7 +15,7 @@ export default function Hero({ language }: HeroProps) {
     ar: {
       election: 'الاستحقاقات الانتخابية 2026',
       partyBadge: 'الحزب المغربي الحر (PML)',
-      title: 'المهندس عبد المنعم الزويني',
+      title: 'عبد المنعم الزويني',
       subtitle: 'مرشح الدائرة التشريعية مراكش المنارة',
       party: 'الحزب المغربي الحر',
       tagline: 'تنمية عادلة . كرامة مصونة . سياسة القرب',
@@ -27,7 +27,7 @@ export default function Hero({ language }: HeroProps) {
     fr: {
       election: 'Élections Législatives 2026',
       partyBadge: 'Parti Marocain Libéral (PML)',
-      title: 'Ingénieur Abdelmounaim Zouini',
+      title: 'Abdelmounaim Zouini',
       subtitle: 'Candidat de la circonscription de Marrakech-Menara',
       party: 'Parti Marocain Libéral',
       tagline: 'Développement équitable . Dignité préservée . Politique de proximité',
@@ -39,7 +39,7 @@ export default function Hero({ language }: HeroProps) {
     en: {
       election: 'Legislative Elections 2026',
       partyBadge: 'Moroccan Liberal Party (PML)',
-      title: 'Engineer Abdelmounaim Zouini',
+      title: 'Abdelmounaim Zouini',
       subtitle: 'Candidate for Marrakech-Menara Legislative District',
       party: 'Liberal Moroccan Party',
       tagline: 'Fair Development . Preserved Dignity . Proximity Politics',

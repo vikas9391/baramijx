@@ -125,7 +125,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
   const content = {
     ar: {
       title: 'سبورة القرب والشكايات',
-      subtitle: 'بوابة مفتوحة يراقبها مباشرة المهندس عبد المنعم الزويني وفريقه الميداني.',
+      subtitle: 'بوابة مفتوحة يراقبها مباشرة عبد المنعم الزويني وفريقه الميداني.',
       formTitle: 'سجل شكايتك',
       formDescription: 'شارك مشاكلك ومشاكل حيك مع المرشح والفريق الميداني',
       namePlaceholder: 'الاسم الكامل',
@@ -142,7 +142,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
     },
     fr: {
       title: 'Tableau de Proximité et Réclamations',
-      subtitle: 'Un portail ouvert surveillé directement par l\'ingénieur Abdelmounaim Zouini et son équipe de terrain.',
+      subtitle: 'Un portail ouvert surveillé directement par Abdelmounaim Zouini et son équipe de terrain.',
       formTitle: 'Enregistrez votre réclamation',
       formDescription: 'Partagez vos problèmes et ceux de votre quartier avec le candidat et l\'équipe de terrain',
       namePlaceholder: 'Nom complet',
@@ -159,7 +159,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
     },
     en: {
       title: 'Citizen Grievance & Proximity Board',
-      subtitle: 'An open portal monitored directly by Engineer Abdelmounaim Zouini and his field team.',
+      subtitle: 'An open portal monitored directly by Abdelmounaim Zouini and his field team.',
       formTitle: 'Register Your Complaint',
       formDescription: 'Share your problems and those of your neighborhood with the candidate and field team',
       namePlaceholder: 'Full Name',

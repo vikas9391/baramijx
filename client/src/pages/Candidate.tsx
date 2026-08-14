@@ -11,7 +11,7 @@ interface CandidatePageProps {
 export default function CandidatePage({ language }: CandidatePageProps) {
   const content = {
     ar: {
-      title: 'المهندس عبد المنعم الزويني',
+      title: 'عبد المنعم الزويني',
       subtitle: 'مرشح الدائرة التشريعية مراكش المنارة',
       competenceTagline: 'كفاءة تقنية برؤية إنسانية',
       highlights: [
@@ -46,7 +46,7 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       charterSubtitle: 'ميثاق الالتزام والمسؤولية الملزم',
     },
     fr: {
-      title: 'Ingénieur Abdelmounaim Zouini',
+      title: 'Abdelmounaim Zouini',
       subtitle: 'Candidat de la circonscription législative de Marrakech-Menara',
       competenceTagline: 'Compétence Technique, Vision Humaine',
       highlights: [
@@ -81,7 +81,7 @@ export default function CandidatePage({ language }: CandidatePageProps) {
       charterSubtitle: 'Charte d\'Engagement et de Responsabilité Contraignante',
     },
     en: {
-      title: 'Engineer Abdelmounaim Zouini',
+      title: 'Abdelmounaim Zouini',
       subtitle: 'Candidate for Marrakech-Menara Parliamentary Constituency',
       competenceTagline: 'Technical Competence, Humane Vision',
       highlights: [
