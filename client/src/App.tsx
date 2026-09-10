@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -11,7 +11,6 @@ import ProgramPage from "./pages/Program";
 import ProximityBoardPage from "./pages/ProximityBoard";
 import FieldWorkPage from "./pages/FieldWork";
 import ElectionServicesPage from "./pages/Electionservicespage";
-import { useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -27,6 +26,14 @@ function ScrollToTop() {
 
 function Router() {
   const [language, setLanguage] = useState<'ar' | 'fr' | 'en'>('ar');
+
+  // Keep the document direction synchronized with the selected language so
+  // Arabic is rendered right-to-left throughout the entire application.
+  useEffect(() => {
+    const isArabic = language === 'ar';
+    document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+    document.documentElement.lang = isArabic ? 'ar' : language;
+  }, [language]);
 
   return (
     <>
