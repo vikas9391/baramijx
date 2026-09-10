@@ -111,6 +111,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Arabic/RTL layout: text starts from the right while LTR languages remain unchanged. */
+  html[dir="rtl"] body {
+    text-align: right;
+  }
+
+  /* Some shared UI components explicitly use Tailwind's text-left utility.
+     Override it only while Arabic/RTL is active. */
+  html[dir="rtl"] .text-left {
+    text-align: right !important;
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
