@@ -42,7 +42,7 @@
 }
 
 :root {
-  /* Campaign Color Palette */
+  /* Campaign color palette */
   --primary: #0F1419;
   --primary-foreground: #F8F7F5;
   --accent: #D4A574;
@@ -55,8 +55,7 @@
   --chart-4: #D97706;
   --chart-5: #F59E0B;
   --radius: 0.65rem;
-  
-  /* Light theme - primary for this site */
+
   --background: oklch(0.98 0.001 286.375);
   --foreground: #1A1A1A;
   --card: oklch(1 0 0);
@@ -108,17 +107,29 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Arabic/RTL layout: text starts from the right while LTR languages remain unchanged. */
+  body {
+    @apply bg-background text-foreground;
+    min-width: 320px;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: #D4A574;
+    color: #0F1419;
+  }
+
   html[dir="rtl"] body {
     text-align: right;
   }
 
-  /* Some shared UI components explicitly use Tailwind's text-left utility.
-     Override it only while Arabic/RTL is active. */
   html[dir="rtl"] .text-left {
     text-align: right !important;
   }
@@ -134,27 +145,30 @@
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
-  
-  /* Arabic Typography */
-  @font-face {
-    font-family: 'Almarai';
-    src: url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap');
-  }
-  
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight;
   }
-  
+
   h1 {
     @apply text-4xl md:text-5xl;
   }
-  
+
   h2 {
     @apply text-3xl md:text-4xl;
   }
-  
+
   h3 {
     @apply text-2xl md:text-3xl;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  :focus-visible {
+    outline: 3px solid #D4A574;
+    outline-offset: 3px;
   }
 }
 
@@ -186,32 +200,31 @@
       max-width: 1280px;
     }
   }
-  
-  /* Campaign-specific components */
+
   .accent-bar {
     @apply h-1 bg-accent w-16 mt-2;
   }
-  
+
   .section-title {
     @apply text-3xl font-bold text-foreground mb-2;
   }
-  
+
   .section-subtitle {
     @apply text-lg text-muted-foreground mb-8;
   }
-  
+
   .program-card {
     @apply bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-border;
   }
-  
+
   .program-card-icon {
     @apply w-16 h-16 mb-4;
   }
-  
+
   .cta-button {
-    @apply px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity duration-200 active:scale-98;
+    @apply px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-all duration-200 active:scale-[0.98];
   }
-  
+
   .nav-button {
     @apply px-4 py-2 text-foreground hover:text-accent transition-colors duration-200;
   }
