@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react';
 interface HeaderProps {
   language: 'ar' | 'fr' | 'en';
   setLanguage: (lang: 'ar' | 'fr' | 'en') => void;
+  onOpenProgram: () => void;
 }
 
 /**
@@ -14,7 +15,7 @@ interface HeaderProps {
  *   - Main bar: navy, logo + menu + CTA button
  *   - Mobile: hamburger toggle opens a slide-down panel with nav, languages, CTA
  */
-export default function Header({ language, setLanguage }: HeaderProps) {
+export default function Header({ language, setLanguage, onOpenProgram }: HeaderProps) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -66,7 +67,18 @@ export default function Header({ language, setLanguage }: HeaderProps) {
     en: 'Menu',
   };
 
+  const programLabel = {
+    ar: 'عرض البرنامج الانتخابي',
+    fr: 'Voir le programme électoral',
+    en: 'View electoral program',
+  };
+
   const closeMobile = () => setMobileOpen(false);
+
+  const openProgram = () => {
+    closeMobile();
+    onOpenProgram();
+  };
 
   return (
     <header className="sticky top-0 z-50">
@@ -126,16 +138,22 @@ export default function Header({ language, setLanguage }: HeaderProps) {
       <div className="shadow-md border-b" style={{ backgroundColor: '#F8F7F5', borderColor: '#e5e2dc' }}>
         <div className="container mx-auto px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-2">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0" onClick={closeMobile}>
+            {/* Logo + program PDF trigger */}
+            <button
+              type="button"
+              onClick={openProgram}
+              aria-label={programLabel[language]}
+              title={programLabel[language]}
+              className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 text-start group cursor-pointer"
+            >
               <img
                 src="/logo.jpeg"
                 alt="PML Logo"
-                className="h-10 w-10 sm:h-12 sm:w-12 object-contain shrink-0"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain shrink-0 transition-transform duration-200 group-hover:scale-105"
               />
               <div className="min-w-0">
                 <div
-                  className="text-xs sm:text-lg font-bold leading-tight truncate"
+                  className="text-xs sm:text-lg font-bold leading-tight truncate group-hover:text-accent transition-colors"
                   style={{ color: '#0F1419' }}
                 >
                   الحزب المغربي الحر
@@ -144,7 +162,7 @@ export default function Header({ language, setLanguage }: HeaderProps) {
                   PARTI MAROCAIN LIBÉRAL
                 </div>
               </div>
-            </Link>
+            </button>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
@@ -227,6 +245,14 @@ export default function Header({ language, setLanguage }: HeaderProps) {
             >
               {servicesLink[language]}
             </Link>
+
+            <button
+              type="button"
+              onClick={openProgram}
+              className="px-4 py-3 rounded-lg text-base font-medium text-start text-accent hover:bg-white/5 transition-colors"
+            >
+              {programLabel[language]}
+            </button>
 
             <Link
               href="/proximity-board"
