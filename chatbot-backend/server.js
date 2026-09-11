@@ -27,7 +27,13 @@ app.use(
 );
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+// Groq shut down llama-3.3-70b-versatile on August 16, 2026.
+// Keep a compatibility fallback in case Hostinger still has the old model in its env.
+const configuredModel = process.env.GROQ_MODEL || '';
+const MODEL =
+  configuredModel === 'llama-3.3-70b-versatile' || configuredModel === 'llama-3.1-8b-instant'
+    ? 'openai/gpt-oss-120b'
+    : configuredModel || 'openai/gpt-oss-120b';
 const DATABASE_URL = process.env.DATABASE_URL;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
