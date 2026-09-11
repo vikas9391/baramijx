@@ -26,6 +26,7 @@ function ScrollToTop() {
 
 function Router() {
   const [language, setLanguage] = useState<'ar' | 'fr' | 'en'>('ar');
+  const [programOpen, setProgramOpen] = useState(false);
 
   // Keep the document direction synchronized with the selected language so
   // Arabic is rendered right-to-left throughout the entire application.
@@ -35,10 +36,29 @@ function Router() {
     document.documentElement.lang = isArabic ? 'ar' : language;
   }, [language]);
 
+  useEffect(() => {
+    if (!programOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setProgramOpen(false);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [programOpen]);
+
+  const closeProgram = () => setProgramOpen(false);
+
   return (
     <>
       <ScrollToTop />
-      <Header language={language} setLanguage={setLanguage} />
+      <Header language={language} setLanguage={setLanguage} onOpenProgram={() => setProgramOpen(true)} />
       <Switch>
         <Route path="/" component={() => <Home language={language} />} />
         <Route path="/candidate" component={() => <CandidatePage language={language} />} />
@@ -51,6 +71,39 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
       <Footer language={language} />
+
+      {programOpen && (
+        <div
+          className="fixed inset-0 z-[200] bg-black/80 p-2 sm:p-4 md:p-6 flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-label={language === 'ar' ? 'البرنامج الانتخابي' : language === 'fr' ? 'Programme électoral' : 'Electoral program'}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeProgram();
+          }}
+        >
+          <div className="relative w-full h-full max-w-6xl bg-[#F8F7F5] rounded-xl overflow-hidden shadow-2xl border border-white/20">
+            <div className="absolute top-0 inset-x-0 z-10 h-12 sm:h-14 flex items-center justify-between px-3 sm:px-5 bg-primary/95 text-primary-foreground shadow-md">
+              <span className="font-semibold text-sm sm:text-base truncate pr-3">
+                {language === 'ar' ? 'البرنامج الانتخابي' : language === 'fr' ? 'Programme électoral' : 'Electoral Program'}
+              </span>
+              <button
+                type="button"
+                onClick={closeProgram}
+                aria-label={language === 'ar' ? 'إغلاق' : language === 'fr' ? 'Fermer' : 'Close'}
+                className="shrink-0 w-9 h-9 rounded-full bg-white/10 text-white text-2xl leading-none hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                ×
+              </button>
+            </div>
+            <iframe
+              src="/programme%20fini.pdf"
+              title={language === 'ar' ? 'البرنامج الانتخابي' : language === 'fr' ? 'Programme électoral' : 'Electoral program'}
+              className="w-full h-full border-0 pt-12 sm:pt-14"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }
