@@ -11,6 +11,7 @@ import ProgramPage from "./pages/Program";
 import ProximityBoardPage from "./pages/ProximityBoard";
 import FieldWorkPage from "./pages/FieldWork";
 import ElectionServicesPage from "./pages/Electionservicespage";
+import AdminPage from "./pages/Admin";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -27,6 +28,17 @@ function ScrollToTop() {
 function Router() {
   const [language, setLanguage] = useState<'ar' | 'fr' | 'en'>('ar');
   const [programOpen, setProgramOpen] = useState(false);
+  const [location] = useLocation();
+
+  // Admin is a separate private surface and intentionally does not render the public header/footer.
+  if (location === '/admin') {
+    return (
+      <>
+        <ScrollToTop />
+        <AdminPage />
+      </>
+    );
+  }
 
   // Keep the document direction synchronized with the selected language so
   // Arabic is rendered right-to-left throughout the entire application.
@@ -108,18 +120,10 @@ function Router() {
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
           <div className="flex flex-col min-h-screen">
