@@ -91,19 +91,17 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
     } catch {
       // Ignore storage restrictions; the hint can still disappear for this session.
     }
-    onOpenProgram();
+    // Open the two-page programme PDF directly — no intermediate confirmation or viewer page.
+    window.open('/programme%20fini.pdf', '_blank', 'noopener,noreferrer');
   };
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Slim utility bar */}
       <div className="bg-primary text-primary-foreground border-b border-primary-foreground/10">
         <div className="container mx-auto px-3 sm:px-4 h-8 sm:h-9 flex items-center justify-between gap-3 text-xs">
           <p className="font-medium truncate hidden sm:block text-primary-foreground/80">{topTagline[language]}</p>
           <div className="flex items-center gap-1.5 sm:gap-3 ml-auto">
-            <Link href="/election-services" className="text-accent font-semibold hidden sm:inline hover:text-accent/80 transition-colors">
-              {servicesLink[language]}
-            </Link>
+            <Link href="/election-services" className="text-accent font-semibold hidden sm:inline hover:text-accent/80 transition-colors">{servicesLink[language]}</Link>
             <div className="flex items-center rounded-md bg-white/5 p-0.5">
               <button type="button" onClick={() => setLanguage('ar')} className={`px-2 sm:px-2.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold transition-colors ${language === 'ar' ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/65 hover:text-primary-foreground'}`}>العربية</button>
               <button type="button" onClick={() => setLanguage('fr')} className={`px-2 sm:px-2.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold transition-colors ${language === 'fr' ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/65 hover:text-primary-foreground'}`}><span className="hidden sm:inline">Français</span><span className="sm:hidden">FR</span></button>
@@ -113,18 +111,11 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
         </div>
       </div>
 
-      {/* Main navigation */}
       <div className="bg-[#F8F7F5]/95 backdrop-blur-md shadow-sm border-b border-[#e5e2dc]">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-3">
             <div className="relative shrink-0">
-              <button
-                type="button"
-                onClick={openProgram}
-                aria-label={programLabel[language]}
-                title={programLabel[language]}
-                className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-2"
-              >
+              <button type="button" onClick={openProgram} aria-label={programLabel[language]} title={programLabel[language]} className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-2">
                 <span className="relative shrink-0">
                   <img src="/logo.jpeg" alt="PML Logo" className="h-9 w-9 sm:h-12 sm:w-12 object-contain transition-transform duration-200 group-hover:scale-105" />
                   <span className="absolute -inset-1 rounded-full border border-accent/0 group-hover:border-accent/40 transition-colors" />
@@ -136,12 +127,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
               </button>
 
               {showProgramHint && (
-                <button
-                  type="button"
-                  onClick={openProgram}
-                  className="absolute top-full mt-1.5 start-0 z-[60] flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 shadow-lg border border-accent/40 text-[10px] sm:text-xs font-semibold whitespace-nowrap animate-pulse"
-                  aria-label={programLabel[language]}
-                >
+                <button type="button" onClick={openProgram} className="absolute top-full mt-1.5 start-0 z-[60] flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 shadow-lg border border-accent/40 text-[10px] sm:text-xs font-semibold whitespace-nowrap animate-pulse" aria-label={programLabel[language]}>
                   <ArrowUpRight className="w-3.5 h-3.5 text-accent shrink-0" />
                   <span>{hintText[language]}</span>
                 </button>
