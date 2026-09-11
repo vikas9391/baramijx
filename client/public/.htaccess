@@ -1,0 +1,10 @@
+# SPA fallback for React/Vite routes on Apache/Hostinger
+RewriteEngine On
+
+# Do not rewrite real files or directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Send all application routes to the Vite entry page
+RewriteRule ^ index.html [L]
