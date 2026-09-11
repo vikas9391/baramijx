@@ -71,10 +71,21 @@ export default function Hero({ language }: HeroProps) {
 
   const c = content[language];
   const galleryImages = [
-    '/campaign-1.svg',
-    '/campaign-2.svg',
-    '/campaign-3.svg',
-    '/campaign-4.svg',
+    '/campaign-1.jpeg',
+    '/campaign-2.jpeg',
+    '/campaign-3.jpeg',
+    '/campaign-4.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.02 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.03 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.04 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.04 AM (1).jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.05 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.05 AM (1).jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.06 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.06 AM (1).jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.07 AM.jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.07 AM (1).jpeg',
+    '/WhatsApp Image 2026-09-11 at 3.08.07 AM (2).jpeg',
   ];
 
   const showPrevious = () => {
@@ -163,35 +174,35 @@ export default function Hero({ language }: HeroProps) {
 
                 <button
                   type="button"
-                  aria-label={language === 'ar' ? c.next : c.next}
+                  aria-label={c.next}
                   onClick={language === 'ar' ? showPrevious : showNext}
                   className="absolute top-1/2 -translate-y-1/2 start-3 md:start-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/90 text-primary-foreground shadow-lg hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center text-2xl"
                 >
-                  {language === 'ar' ? '‹' : '‹'}
+                  ‹
                 </button>
                 <button
                   type="button"
-                  aria-label={language === 'ar' ? c.previous : c.next}
+                  aria-label={c.previous}
                   onClick={language === 'ar' ? showNext : showPrevious}
                   className="absolute top-1/2 -translate-y-1/2 end-3 md:end-5 w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/90 text-primary-foreground shadow-lg hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center text-2xl"
                 >
-                  {language === 'ar' ? '›' : '›'}
+                  ›
                 </button>
               </div>
 
-              <div className="flex items-center justify-center gap-2 mt-4" aria-label="Gallery navigation">
+              <div className="flex items-center justify-center gap-2 mt-4 overflow-x-auto py-1" aria-label="Gallery navigation">
                 {galleryImages.map((image, index) => (
                   <button
                     key={image}
                     type="button"
                     aria-label={`${index + 1}`}
                     onClick={() => setActiveImage(index)}
-                    className={`h-2.5 rounded-full transition-all ${activeImage === index ? 'w-8 bg-accent' : 'w-2.5 bg-primary/25 hover:bg-accent/60'}`}
+                    className={`h-2.5 shrink-0 rounded-full transition-all ${activeImage === index ? 'w-8 bg-accent' : 'w-2.5 bg-primary/25 hover:bg-accent/60'}`}
                   />
                 ))}
               </div>
 
-              <div className="grid grid-cols-4 gap-2 sm:gap-3 mt-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3 mt-4">
                 {galleryImages.map((image, index) => (
                   <button
                     key={image}
