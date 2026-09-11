@@ -4,6 +4,7 @@ import { useState } from 'react';
  * Proximity Board Page
  * Design: Complaint form and published issues display
  * Features: Form submission, issue cards, citizen support tracking
+ * The existing visual design is intentionally unchanged; submissions are now persisted by the backend.
  */
 
 interface ProximityBoardPageProps {
@@ -20,12 +21,16 @@ interface Issue {
   supports: number;
 }
 
+const CHAT_API_URL = import.meta.env.VITE_CHAT_API_URL || 'http://localhost:3001/api/chat';
+const API_BASE_URL = CHAT_API_URL.replace(/\/api\/chat\/?$/, '');
+
 export default function ProximityBoardPage({ language }: ProximityBoardPageProps) {
   const [formData, setFormData] = useState({
     name: '',
     commune: '',
     description: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const seedIssues: Record<'ar' | 'fr' | 'en', Issue[]> = {
     ar: [
@@ -139,6 +144,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
       affected: 'مواطن متأثر',
       supports: 'دعم',
       success: 'تم إرسال شكايتك بنجاح!',
+      error: 'تعذر إرسال الشكاية. المرجو المحاولة مرة أخرى.',
     },
     fr: {
       title: 'Tableau de Proximité et Réclamations',
@@ -156,6 +162,7 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
       affected: 'citoyen affecté',
       supports: 'soutien',
       success: 'Votre réclamation a été envoyée avec succès!',
+      error: 'Impossible d\'envoyer la réclamation. Veuillez réessayer.',
     },
     en: {
       title: 'Citizen Grievance & Proximity Board',
@@ -173,16 +180,29 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
       affected: 'citizen affected',
       supports: 'support',
       success: 'Your complaint was submitted successfully!',
+      error: 'Unable to submit the complaint. Please try again.',
     },
   };
 
   const c = content[language];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.commune && formData.description) {
+    if (!formData.name || !formData.commune || !formData.description || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/problems`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, language }),
+      });
+
+      if (!response.ok) throw new Error('Request failed');
+
+      const result = await response.json();
       const newIssue: Issue = {
-        id: String(issues.length + 1),
+        id: String(result.id || `${Date.now()}`),
         author: formData.name,
         date: new Date().toISOString().split('T')[0],
         location: formData.commune,
@@ -192,6 +212,11 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
       };
       setIssues([newIssue, ...issues]);
       setFormData({ name: '', commune: '', description: '' });
+      window.alert(c.success);
+    } catch (error) {
+      window.alert(c.error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -210,7 +235,6 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-12 sm:py-16 md:py-24">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight">{c.title}</h1>
@@ -219,7 +243,6 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
         </div>
       </section>
 
-      {/* Form Section */}
       <section className="py-12 sm:py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
@@ -233,10 +256,9 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   type="text"
                   placeholder={c.namePlaceholder}
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-base"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -245,10 +267,9 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   type="text"
                   placeholder={c.communePlaceholder}
                   value={formData.commune}
-                  onChange={(e) =>
-                    setFormData({ ...formData, commune: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, commune: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-base"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -256,15 +277,14 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                 <textarea
                   placeholder={c.descriptionPlaceholder}
                   value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={5}
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none text-base"
+                  disabled={isSubmitting}
                 />
               </div>
 
-              <button type="submit" className="cta-button w-full">
+              <button type="submit" className="cta-button w-full" disabled={isSubmitting}>
                 {c.submitButton}
               </button>
             </form>
@@ -272,7 +292,6 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
         </div>
       </section>
 
-      {/* Issues Section */}
       <section className="py-12 sm:py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="section-title mb-2 text-xl sm:text-2xl md:text-3xl">{c.issuesTitle}</h2>
@@ -288,43 +307,28 @@ export default function ProximityBoardPage({ language }: ProximityBoardPageProps
                   key={issue.id}
                   className="bg-card rounded-lg p-5 sm:p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-300"
                 >
-                  {/* Header */}
                   <div className="mb-4 pb-4 border-b border-border">
                     <p className="font-bold text-foreground">{issue.author}</p>
                     <p className="text-xs text-muted-foreground">{issue.date}</p>
                   </div>
 
-                  {/* Location */}
                   <div className="mb-4">
-                    <p className="text-sm font-semibold text-accent">
-                      📍 {issue.location}
-                    </p>
+                    <p className="text-sm font-semibold text-accent">📍 {issue.location}</p>
                   </div>
 
-                  {/* Description */}
-                  <p className="text-foreground/80 text-sm leading-relaxed mb-4">
-                    {issue.description}
-                  </p>
+                  <p className="text-foreground/80 text-sm leading-relaxed mb-4">{issue.description}</p>
 
-                  {/* Stats */}
                   <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/50 rounded-lg">
                     <div className="text-center">
-                      <p className="text-lg font-bold text-accent">
-                        {issue.affected}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {c.affected}
-                      </p>
+                      <p className="text-lg font-bold text-accent">{issue.affected}</p>
+                      <p className="text-xs text-muted-foreground">{c.affected}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-bold text-accent">
-                        {issue.supports}
-                      </p>
+                      <p className="text-lg font-bold text-accent">{issue.supports}</p>
                       <p className="text-xs text-muted-foreground">{c.supports}</p>
                     </div>
                   </div>
 
-                  {/* Support Button */}
                   <button
                     onClick={() => handleSupport(issue.id)}
                     disabled={hasSupported}
