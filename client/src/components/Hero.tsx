@@ -8,6 +8,7 @@ interface HeroProps {
 export default function Hero({ language }: HeroProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const content = {
     ar: {
@@ -166,36 +167,34 @@ export default function Hero({ language }: HeroProps) {
                 <div className="h-1 bg-accent w-16 sm:w-20 mt-4"></div>
                 <p className="text-primary-foreground/70 text-sm md:text-base max-w-2xl mt-4">{c.gallerySubtitle}</p>
               </div>
-              <div className="shrink-0 rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-xs sm:text-sm text-primary-foreground/80">
+              <div className="self-start sm:self-auto shrink-0 rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-xs sm:text-sm text-primary-foreground/80">
                 {galleryImages.length} {c.allPhotos}
               </div>
             </div>
 
-            <div className="bg-[#F8F7F5] rounded-3xl p-3 sm:p-5 md:p-7 shadow-2xl border border-accent/30">
-              {/* Featured image */}
+            <div className="bg-[#F8F7F5] rounded-2xl sm:rounded-3xl p-2.5 sm:p-5 md:p-7 shadow-2xl border border-accent/30">
               <button
                 type="button"
                 onClick={() => setLightboxOpen(true)}
-                className="group relative block w-full overflow-hidden rounded-2xl bg-black/10 focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/60"
+                className="group relative block w-full overflow-hidden rounded-xl sm:rounded-2xl bg-black/10 focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/60"
                 aria-label={`${c.view} ${activeImage + 1}`}
               >
-                <div className="aspect-[16/8] sm:aspect-[16/7] md:aspect-[16/6.5] max-h-[560px]">
-                  <img src={galleryImages[activeImage]} alt={`${c.galleryTitle} ${activeImage + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
+                <div className="aspect-[4/3] sm:aspect-[16/7] md:aspect-[16/6.5] max-h-[560px]">
+                  <img src={galleryImages[activeImage]} alt={`${c.galleryTitle} ${activeImage + 1}`} fetchPriority="high" className="w-full h-full object-cover transition-transform duration-700 sm:group-hover:scale-[1.025]" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10 opacity-80"></div>
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 flex items-end justify-between gap-4 text-left" dir="ltr">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 opacity-85"></div>
+                <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-6 flex items-end justify-between gap-3 text-left" dir="ltr">
                   <div>
-                    <p className="text-white/70 text-xs uppercase tracking-[0.2em]">PML • 2026</p>
-                    <p className="text-white font-semibold text-sm sm:text-base mt-1">{activeImage + 1} / {galleryImages.length}</p>
+                    <p className="text-white/70 text-[10px] sm:text-xs uppercase tracking-[0.18em]">PML • 2026</p>
+                    <p className="text-white font-semibold text-xs sm:text-base mt-1">{activeImage + 1} / {galleryImages.length}</p>
                   </div>
-                  <span className="rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-4 py-2 text-white text-xs sm:text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-3 py-1.5 sm:px-4 sm:py-2 text-white text-[11px] sm:text-sm sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                     {c.view} ↗
                   </span>
                 </div>
               </button>
 
-              {/* Masonry gallery — preserves the natural proportions of the photos */}
-              <div className="mt-5 md:mt-7 columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4">
+              <div className="mt-4 sm:mt-7 columns-2 sm:columns-2 md:columns-3 lg:columns-4 gap-2.5 sm:gap-3 md:gap-4">
                 {galleryImages.map((image, index) => (
                   <button
                     key={image}
@@ -204,14 +203,14 @@ export default function Hero({ language }: HeroProps) {
                       setActiveImage(index);
                       setLightboxOpen(true);
                     }}
-                    className={`group relative mb-3 md:mb-4 block w-full overflow-hidden rounded-xl bg-black/5 text-left break-inside-avoid focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/60 ${activeImage === index ? 'ring-2 ring-accent ring-offset-2' : ''}`}
+                    className={`group relative mb-2.5 sm:mb-3 md:mb-4 block w-full overflow-hidden rounded-lg sm:rounded-xl bg-black/5 text-left break-inside-avoid focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/60 ${activeImage === index ? 'ring-2 ring-accent ring-offset-1 sm:ring-offset-2' : ''}`}
                     aria-label={`${c.view} ${index + 1}`}
                   >
-                    <img src={image} alt={`${c.galleryTitle} ${index + 1}`} loading={index > 3 ? 'lazy' : 'eager'} className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.035]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="absolute inset-x-0 bottom-0 p-3 flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity" dir="ltr">
-                      <span className="text-white text-xs font-semibold bg-black/35 backdrop-blur-sm rounded-full px-2.5 py-1">{index + 1}</span>
-                      <span className="text-white text-xs">↗</span>
+                    <img src={image} alt={`${c.galleryTitle} ${index + 1}`} loading={index > 3 ? 'lazy' : 'eager'} className="w-full h-auto block transition-transform duration-500 sm:group-hover:scale-[1.035]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-x-0 bottom-0 p-2 sm:p-3 flex items-end justify-between sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" dir="ltr">
+                      <span className="text-white text-[10px] sm:text-xs font-semibold bg-black/45 backdrop-blur-sm rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1">{index + 1}</span>
+                      <span className="hidden sm:inline text-white text-xs">↗</span>
                     </div>
                   </button>
                 ))}
@@ -221,19 +220,35 @@ export default function Hero({ language }: HeroProps) {
         </section>
 
         {lightboxOpen && (
-          <div className="fixed inset-0 z-[100] bg-black/95 p-3 sm:p-6 flex items-center justify-center" role="dialog" aria-modal="true" onClick={() => setLightboxOpen(false)}>
-            <button type="button" aria-label={c.close} onClick={() => setLightboxOpen(false)} className="absolute top-4 end-4 z-10 w-11 h-11 rounded-full bg-white/10 text-white text-2xl hover:bg-white/20 transition-colors">×</button>
+          <div
+            className="fixed inset-0 z-[100] bg-black/95 p-2.5 sm:p-6 flex items-center justify-center touch-none"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setLightboxOpen(false)}
+            onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+            onTouchEnd={(event) => {
+              if (touchStartX === null) return;
+              const endX = event.changedTouches[0]?.clientX ?? touchStartX;
+              const delta = endX - touchStartX;
+              if (Math.abs(delta) > 55) {
+                if (delta > 0) showPrevious();
+                else showNext();
+              }
+              setTouchStartX(null);
+            }}
+          >
+            <button type="button" aria-label={c.close} onClick={() => setLightboxOpen(false)} className="absolute top-3 end-3 sm:top-4 sm:end-4 z-20 w-11 h-11 rounded-full bg-white/10 text-white text-2xl hover:bg-white/20 transition-colors">×</button>
 
-            <button type="button" aria-label={c.previous} onClick={(event) => { event.stopPropagation(); showPrevious(); }} className="absolute start-2 sm:start-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground text-white text-3xl backdrop-blur-md transition-colors">‹</button>
+            <div className="relative w-full h-full flex items-center justify-center" onClick={(event) => event.stopPropagation()}>
+              <img src={galleryImages[activeImage]} alt={`${c.galleryTitle} ${activeImage + 1}`} className="max-w-[96vw] sm:max-w-[92vw] max-h-[78vh] sm:max-h-[82vh] object-contain rounded-lg shadow-2xl select-none" draggable={false} />
 
-            <div className="relative max-w-6xl max-h-full flex flex-col items-center" onClick={(event) => event.stopPropagation()}>
-              <img src={galleryImages[activeImage]} alt={`${c.galleryTitle} ${activeImage + 1}`} className="max-w-[92vw] max-h-[82vh] object-contain rounded-lg shadow-2xl" />
-              <div className="mt-3 rounded-full bg-white/10 backdrop-blur-md border border-white/15 px-4 py-2 text-white text-xs sm:text-sm" dir="ltr">
+              <button type="button" aria-label={c.previous} onClick={(event) => { event.stopPropagation(); showPrevious(); }} className="absolute start-1 sm:start-2 md:start-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground text-white text-3xl backdrop-blur-md transition-colors">‹</button>
+              <button type="button" aria-label={c.next} onClick={(event) => { event.stopPropagation(); showNext(); }} className="absolute end-1 sm:end-2 md:end-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground text-white text-3xl backdrop-blur-md transition-colors">›</button>
+
+              <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/45 backdrop-blur-md border border-white/15 px-3.5 py-1.5 sm:px-4 sm:py-2 text-white text-[11px] sm:text-sm" dir="ltr">
                 {activeImage + 1} / {galleryImages.length}
               </div>
             </div>
-
-            <button type="button" aria-label={c.next} onClick={(event) => { event.stopPropagation(); showNext(); }} className="absolute end-2 sm:end-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground text-white text-3xl backdrop-blur-md transition-colors">›</button>
           </div>
         )}
       </div>
