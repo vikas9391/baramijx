@@ -30,18 +30,7 @@ function Router() {
   const [programOpen, setProgramOpen] = useState(false);
   const [location] = useLocation();
 
-  // Admin is a separate private surface and intentionally does not render the public header/footer.
-  if (location === '/admin') {
-    return (
-      <>
-        <ScrollToTop />
-        <AdminPage />
-      </>
-    );
-  }
-
-  // Keep the document direction synchronized with the selected language so
-  // Arabic is rendered right-to-left throughout the entire application.
+  // Keep hooks unconditional so switching between public and admin routes is safe.
   useEffect(() => {
     const isArabic = language === 'ar';
     document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
@@ -67,6 +56,15 @@ function Router() {
 
   const closeProgram = () => setProgramOpen(false);
 
+  if (location === '/admin') {
+    return (
+      <>
+        <ScrollToTop />
+        <AdminPage />
+      </>
+    );
+  }
+
   return (
     <>
       <ScrollToTop />
@@ -79,7 +77,6 @@ function Router() {
         <Route path="/field-work" component={() => <FieldWorkPage language={language} />} />
         <Route path="/election-services" component={() => <ElectionServicesPage language={language} />} />
         <Route path="/404" component={NotFound} />
-        {/* Final fallback route */}
         <Route component={NotFound} />
       </Switch>
       <Footer language={language} />
