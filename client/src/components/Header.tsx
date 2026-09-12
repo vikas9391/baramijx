@@ -110,17 +110,17 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
         </div>
       </div>
 
-      <div className="bg-[#F8F7F5]/95 backdrop-blur-md shadow-sm border-b border-[#e5e2dc]">
+      <div className="bg-primary backdrop-blur-md shadow-sm border-b border-primary-foreground/10">
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-4 lg:gap-6">
+          <div className="h-[64px] sm:h-[76px] flex items-center justify-between gap-4 lg:gap-6">
             <div className="relative shrink-0">
-              <button type="button" onClick={openProgram} aria-label={programLabel[language]} title={programLabel[language]} className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-2">
+              <button type="button" onClick={openProgram} aria-label={programLabel[language]} title={programLabel[language]} className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-1.5 sm:py-2">
                 <span className="relative shrink-0">
                   <img src="/logo.jpeg" alt="PML Logo" className="h-9 w-9 sm:h-12 sm:w-12 object-contain transition-transform duration-200 group-hover:scale-105" />
                   <span className="absolute -inset-1 rounded-full border border-accent/0 group-hover:border-accent/40 transition-colors" />
                 </span>
                 <div className="min-w-0 max-w-[180px] sm:max-w-none">
-                  <div className="text-[13px] sm:text-lg font-bold leading-tight truncate group-hover:text-accent transition-colors" style={{ color: '#0F1419' }}>الحزب المغربي الحر</div>
+                  <div className="text-[13px] sm:text-lg font-bold leading-tight truncate text-white group-hover:text-accent transition-colors">الحزب المغربي الحر</div>
                   <div className="text-[8px] sm:text-xs font-medium tracking-wide text-accent leading-tight truncate">PARTI MAROCAIN LIBÉRAL</div>
                 </div>
               </button>
@@ -135,7 +135,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
 
             <nav className="hidden md:flex flex-1 items-center justify-center gap-1 lg:gap-2 xl:gap-3">
               {navItems[language].map((item) => (
-                <Link key={item.href} href={item.href} className="relative px-2.5 lg:px-3.5 xl:px-4 py-2.5 rounded-lg text-sm lg:text-[15px] font-semibold whitespace-nowrap transition-all duration-200 hover:bg-accent/10 hover:text-accent" style={location === item.href ? { color: '#0F1419', fontWeight: 700 } : { color: '#0F1419cc' }}>
+                <Link key={item.href} href={item.href} className="relative px-2.5 lg:px-3.5 xl:px-4 py-2.5 rounded-lg text-sm lg:text-[15px] font-semibold whitespace-nowrap transition-all duration-200 hover:bg-white/10 hover:text-accent" style={location === item.href ? { color: '#FFFFFF', fontWeight: 700 } : { color: '#FFFFFFCC' }}>
                   {location === item.href && <span className="absolute inset-x-2 bottom-1 h-0.5 rounded-full bg-accent" />}
                   {item.label}
                 </Link>
@@ -144,7 +144,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
 
             <div className="flex items-center gap-2 shrink-0">
               <Link href="/proximity-board" className="cta-button text-xs sm:text-sm hidden xl:inline-flex items-center whitespace-nowrap px-4 py-2.5">{cta[language]}</Link>
-              <button type="button" onClick={() => setMobileOpen((prev) => !prev)} aria-label={menuLabel[language]} aria-expanded={mobileOpen} className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all duration-200 shrink-0" style={{ borderColor: mobileOpen ? '#D4A574' : '#0F1419', color: mobileOpen ? '#F8F7F5' : '#0F1419', backgroundColor: mobileOpen ? '#0F1419' : 'transparent' }}>
+              <button type="button" onClick={() => setMobileOpen((prev) => !prev)} aria-label={menuLabel[language]} aria-expanded={mobileOpen} className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all duration-200 shrink-0" style={{ borderColor: mobileOpen ? '#D4A574' : '#F8F7F5', color: mobileOpen ? '#F8F7F5' : '#F8F7F5', backgroundColor: mobileOpen ? '#0F1419' : 'transparent' }}>
                 {mobileOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
