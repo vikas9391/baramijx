@@ -13,8 +13,6 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -227,5 +225,16 @@
 
   .nav-button {
     @apply px-4 py-2 text-foreground hover:text-accent transition-colors duration-200;
+  }
+}
+
+/* Give the campaign gallery thumbnails a little more visual size on large screens. */
+@media (min-width: 1024px) {
+  #campaign-gallery [class*="lg:columns-4"] {
+    column-count: 3;
+  }
+
+  #campaign-gallery > div {
+    max-width: 1400px;
   }
 }
