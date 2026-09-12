@@ -13,6 +13,8 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -40,9 +42,9 @@
 }
 
 :root {
-  /* Campaign color palette */
-  --primary: #0F1419;
-  --primary-foreground: #F8F7F5;
+  /* Light campaign theme: warm paper + dark ink + PML gold. */
+  --primary: #F8F7F5;
+  --primary-foreground: #0F1419;
   --accent: #D4A574;
   --accent-foreground: #0F1419;
   --sidebar-primary: #0F1419;
@@ -54,23 +56,23 @@
   --chart-5: #F59E0B;
   --radius: 0.65rem;
 
-  --background: oklch(0.98 0.001 286.375);
-  --foreground: #1A1A1A;
-  --card: oklch(1 0 0);
-  --card-foreground: #1A1A1A;
-  --popover: oklch(1 0 0);
-  --popover-foreground: #1A1A1A;
-  --secondary: #0F1419;
-  --secondary-foreground: #F8F7F5;
+  --background: #F8F7F5;
+  --foreground: #0F1419;
+  --card: #FFFFFF;
+  --card-foreground: #0F1419;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1419;
+  --secondary: #EEF0F2;
+  --secondary-foreground: #0F1419;
   --muted: #E5E7EB;
-  --muted-foreground: #6B7280;
+  --muted-foreground: #4B5563;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: #E5E7EB;
-  --input: #F3F4F6;
+  --border: #D9DDE2;
+  --input: #FFFFFF;
   --ring: #D4A574;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: #1A1A1A;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0F1419;
   --sidebar-accent: #D4A574;
   --sidebar-accent-foreground: #0F1419;
   --sidebar-border: #E5E7EB;
@@ -78,26 +80,39 @@
 }
 
 .dark {
-  --background: #0F1419;
+  /* Dark campaign theme: deep navy + warm gold. */
+  --primary: #0F1419;
+  --primary-foreground: #F8F7F5;
+  --accent: #D4A574;
+  --accent-foreground: #0F1419;
+  --sidebar-primary: #D4A574;
+  --sidebar-primary-foreground: #0F1419;
+  --chart-1: #D4A574;
+  --chart-2: #F8F7F5;
+  --chart-3: #9CA3AF;
+  --chart-4: #F59E0B;
+  --chart-5: #D97706;
+
+  --background: #0B1015;
   --foreground: #F8F7F5;
-  --card: #1A1F2E;
+  --card: #151C24;
   --card-foreground: #F8F7F5;
-  --popover: #1A1F2E;
+  --popover: #151C24;
   --popover-foreground: #F8F7F5;
-  --secondary: #D4A574;
-  --secondary-foreground: #0F1419;
-  --muted: #374151;
-  --muted-foreground: #D1D5DB;
+  --secondary: #1D2732;
+  --secondary-foreground: #F8F7F5;
+  --muted: #27313C;
+  --muted-foreground: #CBD5E1;
   --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: #374151;
-  --input: #1F2937;
+  --destructive-foreground: #FFFFFF;
+  --border: #34404C;
+  --input: #151C24;
   --ring: #D4A574;
-  --sidebar: #1A1F2E;
+  --sidebar: #151C24;
   --sidebar-foreground: #F8F7F5;
   --sidebar-accent: #D4A574;
   --sidebar-accent-foreground: #0F1419;
-  --sidebar-border: #374151;
+  --sidebar-border: #34404C;
   --sidebar-ring: #D4A574;
 }
 
@@ -117,6 +132,7 @@
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 300ms ease, color 300ms ease;
   }
 
   ::selection {
@@ -228,7 +244,6 @@
   }
 }
 
-/* Give the campaign gallery thumbnails a little more visual size on large screens. */
 @media (min-width: 1024px) {
   #campaign-gallery [class*="lg:columns-4"] {
     column-count: 3;
