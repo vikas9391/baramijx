@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface HeaderProps {
   language: 'ar' | 'fr' | 'en';
@@ -12,6 +13,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showProgramHint, setShowProgramHint] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     try {
@@ -81,6 +83,12 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
     en: 'Click here to view the programme',
   };
 
+  const themeLabel = {
+    ar: theme === 'light' ? 'الوضع الداكن' : 'الوضع الفاتح',
+    fr: theme === 'light' ? 'Mode sombre' : 'Mode clair',
+    en: theme === 'light' ? 'Dark mode' : 'Light mode',
+  };
+
   const closeMobile = () => setMobileOpen(false);
 
   const openProgram = () => {
@@ -96,31 +104,40 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="bg-primary text-primary-foreground border-b border-primary-foreground/10">
+      <div className="bg-primary text-primary-foreground border-b border-primary-foreground/10 transition-colors duration-300">
         <div className="container mx-auto px-3 sm:px-4 h-8 sm:h-9 flex items-center justify-between gap-3 text-xs">
           <p className="font-medium truncate hidden sm:block text-primary-foreground/80">{topTagline[language]}</p>
           <div className="flex items-center gap-1.5 sm:gap-3 ml-auto">
-            <Link href="/election-services" className="text-accent font-semibold hidden sm:inline hover:text-accent/80 transition-colors">{servicesLink[language]}</Link>
-            <div className="flex items-center rounded-md bg-white/5 p-0.5">
+            <Link href="/election-services" className="text-accent font-semibold hidden sm:inline hover:opacity-80 transition-opacity">{servicesLink[language]}</Link>
+            <div className="flex items-center rounded-md bg-foreground/5 p-0.5">
               <button type="button" onClick={() => setLanguage('ar')} className={`px-2 sm:px-2.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold transition-colors ${language === 'ar' ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/65 hover:text-primary-foreground'}`}>العربية</button>
               <button type="button" onClick={() => setLanguage('fr')} className={`px-2 sm:px-2.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold transition-colors ${language === 'fr' ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/65 hover:text-primary-foreground'}`}><span className="hidden sm:inline">Français</span><span className="sm:hidden">FR</span></button>
               <button type="button" onClick={() => setLanguage('en')} className={`px-2 sm:px-2.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold transition-colors ${language === 'en' ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/65 hover:text-primary-foreground'}`}><span className="hidden sm:inline">English</span><span className="sm:hidden">EN</span></button>
             </div>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={themeLabel[language]}
+              title={themeLabel[language]}
+              className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-primary-foreground/20 hover:border-accent hover:text-accent transition-colors"
+            >
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-primary backdrop-blur-md shadow-sm border-b border-primary-foreground/10">
+      <div className="bg-background/95 backdrop-blur-md shadow-sm border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="h-[64px] sm:h-[76px] flex items-center justify-between gap-4 lg:gap-6">
+          <div className="min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-4 lg:gap-6">
             <div className="relative shrink-0">
-              <button type="button" onClick={openProgram} aria-label={programLabel[language]} title={programLabel[language]} className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-1.5 sm:py-2">
+              <button type="button" onClick={openProgram} aria-label={programLabel[language]} title={programLabel[language]} className="flex items-center gap-2 sm:gap-3 min-w-0 text-start group cursor-pointer py-2">
                 <span className="relative shrink-0">
                   <img src="/logo.jpeg" alt="PML Logo" className="h-9 w-9 sm:h-12 sm:w-12 object-contain transition-transform duration-200 group-hover:scale-105" />
                   <span className="absolute -inset-1 rounded-full border border-accent/0 group-hover:border-accent/40 transition-colors" />
                 </span>
                 <div className="min-w-0 max-w-[180px] sm:max-w-none">
-                  <div className="text-[13px] sm:text-lg font-bold leading-tight truncate text-white group-hover:text-accent transition-colors">الحزب المغربي الحر</div>
+                  <div className="text-[13px] sm:text-lg font-bold leading-tight truncate text-foreground group-hover:text-accent transition-colors">الحزب المغربي الحر</div>
                   <div className="text-[8px] sm:text-xs font-medium tracking-wide text-accent leading-tight truncate">PARTI MAROCAIN LIBÉRAL</div>
                 </div>
               </button>
@@ -135,7 +152,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
 
             <nav className="hidden md:flex flex-1 items-center justify-center gap-1 lg:gap-2 xl:gap-3">
               {navItems[language].map((item) => (
-                <Link key={item.href} href={item.href} className="relative px-2.5 lg:px-3.5 xl:px-4 py-2.5 rounded-lg text-sm lg:text-[15px] font-semibold whitespace-nowrap transition-all duration-200 hover:bg-white/10 hover:text-accent" style={location === item.href ? { color: '#FFFFFF', fontWeight: 700 } : { color: '#FFFFFFCC' }}>
+                <Link key={item.href} href={item.href} className={`relative px-2.5 lg:px-3.5 xl:px-4 py-2.5 rounded-lg text-sm lg:text-[15px] font-semibold whitespace-nowrap transition-all duration-200 ${location === item.href ? 'text-foreground font-bold' : 'text-foreground/75'} hover:bg-accent/10 hover:text-accent`}>
                   {location === item.href && <span className="absolute inset-x-2 bottom-1 h-0.5 rounded-full bg-accent" />}
                   {item.label}
                 </Link>
@@ -144,7 +161,7 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
 
             <div className="flex items-center gap-2 shrink-0">
               <Link href="/proximity-board" className="cta-button text-xs sm:text-sm hidden xl:inline-flex items-center whitespace-nowrap px-4 py-2.5">{cta[language]}</Link>
-              <button type="button" onClick={() => setMobileOpen((prev) => !prev)} aria-label={menuLabel[language]} aria-expanded={mobileOpen} className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all duration-200 shrink-0" style={{ borderColor: mobileOpen ? '#D4A574' : '#F8F7F5', color: mobileOpen ? '#F8F7F5' : '#F8F7F5', backgroundColor: mobileOpen ? '#0F1419' : 'transparent' }}>
+              <button type="button" onClick={() => setMobileOpen((prev) => !prev)} aria-label={menuLabel[language]} aria-expanded={mobileOpen} className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-foreground transition-all duration-200 shrink-0 text-foreground hover:border-accent hover:text-accent" style={mobileOpen ? { backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)', borderColor: '#D4A574' } : undefined}>
                 {mobileOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
@@ -152,13 +169,17 @@ export default function Header({ language, setLanguage, onOpenProgram }: HeaderP
         </div>
 
         <div className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${mobileOpen ? 'max-h-[620px] opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="bg-primary border-t border-white/10">
+          <div className="bg-primary border-t border-primary-foreground/10 transition-colors duration-300">
             <nav className="container mx-auto px-3 py-3 flex flex-col gap-1">
               {navItems[language].map((item) => (
-                <Link key={item.href} href={item.href} onClick={closeMobile} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors" style={location === item.href ? { backgroundColor: '#D4A574', color: '#0F1419' } : { color: '#F8F7F5' }}>{item.label}</Link>
+                <Link key={item.href} href={item.href} onClick={closeMobile} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors" style={location === item.href ? { backgroundColor: '#D4A574', color: '#0F1419' } : { color: 'var(--primary-foreground)' }}>{item.label}</Link>
               ))}
-              <Link href="/election-services" onClick={closeMobile} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold text-accent hover:bg-white/5 transition-colors">{servicesLink[language]}</Link>
-              <button type="button" onClick={openProgram} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold text-start text-accent hover:bg-white/5 transition-colors">{programLabel[language]}</button>
+              <Link href="/election-services" onClick={closeMobile} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold text-accent hover:bg-primary-foreground/5 transition-colors">{servicesLink[language]}</Link>
+              <button type="button" onClick={openProgram} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold text-start text-accent hover:bg-primary-foreground/5 transition-colors">{programLabel[language]}</button>
+              <button type="button" onClick={() => { toggleTheme?.(); closeMobile(); }} className="px-4 py-3.5 rounded-xl text-[15px] font-semibold text-start text-primary-foreground hover:bg-primary-foreground/5 transition-colors flex items-center gap-3">
+                {theme === 'light' ? <Moon className="w-4 h-4 text-accent" /> : <Sun className="w-4 h-4 text-accent" />}
+                <span>{themeLabel[language]}</span>
+              </button>
               <Link href="/proximity-board" onClick={closeMobile} className="cta-button text-center mt-2 mb-1 py-3.5">{cta[language]}</Link>
             </nav>
           </div>
