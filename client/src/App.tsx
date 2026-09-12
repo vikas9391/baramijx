@@ -30,7 +30,6 @@ function Router() {
   const [programOpen, setProgramOpen] = useState(false);
   const [location] = useLocation();
 
-  // Keep hooks unconditional so switching between public and admin routes is safe.
   useEffect(() => {
     const isArabic = language === 'ar';
     document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
@@ -91,7 +90,7 @@ function Router() {
             if (event.target === event.currentTarget) closeProgram();
           }}
         >
-          <div className="relative w-full h-full max-w-6xl bg-[#F8F7F5] rounded-xl overflow-hidden shadow-2xl border border-white/20">
+          <div className="relative w-full h-full max-w-6xl bg-background rounded-xl overflow-hidden shadow-2xl border border-border">
             <div className="absolute top-0 inset-x-0 z-10 h-12 sm:h-14 flex items-center justify-between px-3 sm:px-5 bg-primary/95 text-primary-foreground shadow-md">
               <span className="font-semibold text-sm sm:text-base truncate pr-3">
                 {language === 'ar' ? 'البرنامج الانتخابي' : language === 'fr' ? 'Programme électoral' : 'Electoral Program'}
@@ -120,10 +119,10 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="light" switchable>
         <TooltipProvider>
           <Toaster />
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
             <Router />
           </div>
         </TooltipProvider>
