@@ -47,7 +47,8 @@ async function initVisitorTable() {
 app.use(express.json({ limit: '2mb' }));
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+  const domainOrigin = origin && /^https:\/\/(www\.)?ezzouini\.com$/i.test(origin);
+  if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin) || domainOrigin) {
     if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -56,6 +57,21 @@ app.use((req, res, next) => {
     if (req.method === 'OPTIONS') return res.sendStatus(204);
   }
   next();
+});
+
+// Handle admin login at the public gateway so the session cookie works when the
+// frontend and backend are on different origins. The original server keeps the
+// same authentication rules for all subsequent admin requests.
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body || {};
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) {
+    return res.status(503).json({ error: 'Admin authentication is not configured.' });
+  }
+  if (!safeEqual(username, ADMIN_USERNAME) || !safeEqual(password, ADMIN_PASSWORD)) {
+    return res.status(401).json({ error: 'Invalid username or password.' });
+  }
+  res.setHeader('Set-Cookie', `admin_session=${encodeURIComponent(`${ADMIN_USERNAME}.${makeAdminToken()}`)}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=28800`);
+  return res.json({ success: true });
 });
 
 app.post('/api/visitor/visit', async (req, res) => {
@@ -93,11 +109,9 @@ async function updateDisplayedVisitorCount(req, res) {
   } catch (err) { console.error('Admin visitor counter update error:', err); res.status(500).json({ error: 'Unable to update visitor counter.' }); }
 }
 
-// Support both PATCH and POST. POST is used by the admin UI because some hosting/reverse-proxy setups restrict PATCH.
 app.patch('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
 app.post('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
 
-// Proxy all existing campaign API routes to the original backend, keeping its current behavior intact.
 app.use(async (req, res) => {
   try {
     const headers = { ...req.headers };
