@@ -31,10 +31,12 @@ function Router() {
   const [location] = useLocation();
 
   useEffect(() => {
-    const isArabic = language === 'ar';
+    // The admin panel is English/LTR regardless of the public site's language.
+    const isAdmin = location === '/admin';
+    const isArabic = !isAdmin && language === 'ar';
     document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
-    document.documentElement.lang = isArabic ? 'ar' : language;
-  }, [language]);
+    document.documentElement.lang = isAdmin ? 'en' : isArabic ? 'ar' : language;
+  }, [language, location]);
 
   useEffect(() => {
     if (!programOpen) return;
