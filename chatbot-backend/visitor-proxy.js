@@ -82,15 +82,20 @@ app.get('/api/admin/visitors', requireAdmin, async (req, res) => {
   } catch (err) { console.error('Admin visitor counter error:', err); res.status(500).json({ error: 'Unable to load visitor counter.' }); }
 });
 
-app.patch('/api/admin/visitors', requireAdmin, async (req, res) => {
+async function updateDisplayedVisitorCount(req, res) {
   try {
     if (!pool) return res.status(503).json({ error: 'Database is not configured.' });
     const desired = Number(req.body?.displayed_visits);
     if (!Number.isSafeInteger(desired) || desired < 0) return res.status(400).json({ error: 'Displayed visitor count must be a non-negative whole number.' });
     const result = await pool.query(`UPDATE visitor_counter SET display_offset = $1 - actual_visits, updated_at = NOW() WHERE id = 1 RETURNING actual_visits, display_offset, actual_visits + display_offset AS displayed_visits, updated_at`, [desired]);
+    if (!result.rows[0]) return res.status(404).json({ error: 'Visitor counter is not initialized.' });
     res.json(result.rows[0]);
   } catch (err) { console.error('Admin visitor counter update error:', err); res.status(500).json({ error: 'Unable to update visitor counter.' }); }
-});
+}
+
+// Support both PATCH and POST. POST is used by the admin UI because some hosting/reverse-proxy setups restrict PATCH.
+app.patch('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
+app.post('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
 
 // Proxy all existing campaign API routes to the original backend, keeping its current behavior intact.
 app.use(async (req, res) => {
