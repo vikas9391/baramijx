@@ -1,5 +1,6 @@
 
 import { Link } from 'wouter';
+import VisitorCounter from './VisitorCounter';
 
 interface FooterProps {
   language: 'ar' | 'fr' | 'en';
@@ -77,50 +78,30 @@ export default function Footer({ language }: FooterProps) {
   return (
     <footer className="bg-primary text-primary-foreground py-16">
       <div className="container mx-auto px-4">
-        {/* Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Candidate Info */}
           <div className="space-y-3">
-            <img
-              src="logo.jpeg"
-              alt="PML Logo"
-              className="h-10 w-10"
-            />
+            <img src="logo.jpeg" alt="PML Logo" className="h-10 w-10" />
             <h3 className="font-bold text-lg">{c.candidateTitle}</h3>
-            <p className="text-sm text-primary-foreground/80 leading-relaxed">
-              {c.candidateDesc}
-            </p>
+            <p className="text-sm text-primary-foreground/80 leading-relaxed">{c.candidateDesc}</p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-bold text-accent mb-4">{c.quickLinks}</h4>
             <ul className="space-y-2">
               {c.links.map((link, idx) => (
                 <li key={idx}>
-                  <Link
-                    href={link.href}
-                    className="text-primary-foreground/80 hover:text-accent transition-colors duration-200 text-sm"
-                  >
-                    {link.label}
-                  </Link>
+                  <Link href={link.href} className="text-primary-foreground/80 hover:text-accent transition-colors duration-200 text-sm">{link.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Party Info */}
           <div>
             <h4 className="font-bold text-accent mb-4">{c.partySection}</h4>
-            <p className="text-sm text-primary-foreground/80 leading-relaxed mb-3">
-              {c.partyDesc}
-            </p>
-            <p className="text-xs text-primary-foreground/60">
-              {c.regionalOffice}
-            </p>
+            <p className="text-sm text-primary-foreground/80 leading-relaxed mb-3">{c.partyDesc}</p>
+            <p className="text-xs text-primary-foreground/60">{c.regionalOffice}</p>
           </div>
 
-          {/* Commitments */}
           <div>
             <h4 className="font-bold text-accent mb-4">{c.commitmentTitle}</h4>
             <ul className="space-y-2">
@@ -134,9 +115,9 @@ export default function Footer({ language }: FooterProps) {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-primary-foreground/20 pt-8">
-          {/* Copyright & Tagline */}
+        <VisitorCounter language={language} />
+
+        <div className="border-t border-primary-foreground/20 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-primary-foreground/60">{c.copyright}</p>
             <p className="text-sm font-semibold text-accent">{c.tagline}</p>
