@@ -244,6 +244,12 @@
   }
 }
 
+/* Keep submit text readable when the campaign CTA theme is overridden. */
+form button.cta-button[type="submit"] {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
 @media (min-width: 1024px) {
   #campaign-gallery [class*="lg:columns-4"] {
     column-count: 3;
