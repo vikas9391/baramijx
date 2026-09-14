@@ -1,0 +1,40 @@
+/* Keep the standalone admin login readable even if the public campaign theme or dark-mode styles leak into the route. */
+body:has(form input[autocomplete="username"]) {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  color-scheme: light !important;
+}
+
+body:has(form input[autocomplete="username"]) form {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body:has(form input[autocomplete="username"]) form h1,
+body:has(form input[autocomplete="username"]) form p,
+body:has(form input[autocomplete="username"]) form span,
+body:has(form input[autocomplete="username"]) form label {
+  color: #0f172a !important;
+}
+
+body:has(form input[autocomplete="username"]) form p.text-slate-500 {
+  color: #64748b !important;
+}
+
+body:has(form input[autocomplete="username"]) form input {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  caret-color: #0f172a !important;
+}
+
+body:has(form input[autocomplete="username"]) form input::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+body:has(form input[autocomplete="username"]) form button[type="submit"] {
+  color: #0f1419 !important;
+  -webkit-text-fill-color: #0f1419 !important;
+}
