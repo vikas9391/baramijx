@@ -98,7 +98,7 @@ export default function AdminPage() {
     if (!Number.isSafeInteger(desired) || desired < 0) { window.alert('Enter a non-negative whole number.'); return; }
     setVisitorSaving(true);
     try {
-      const data = await api('/api/admin/visitors', { method: 'PATCH', body: JSON.stringify({ displayed_visits: desired }) });
+      const data = await api('/api/admin/visitors', { method: 'POST', body: JSON.stringify({ displayed_visits: desired }) });
       setVisitorStats(data); setVisitorInput(String(data.displayed_visits));
     } catch (error) { window.alert(error instanceof Error ? error.message : 'Unable to update visitor count.'); }
     finally { setVisitorSaving(false); }
