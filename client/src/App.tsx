@@ -46,7 +46,7 @@ function Router() {
   const closeProgram = () => setProgramOpen(false);
 
   if (location === '/admin') {
-    return <><ScrollToTop /><AdminPage /><DailyVisitorGraph /></>;
+    return <><ScrollToTop /><style>{`form button[type="submit"] { color:#fff !important; -webkit-text-fill-color:#fff !important; opacity:1 !important; text-shadow:none !important; } form button[type="submit"] svg { color:#fff !important; stroke:#fff !important; }`}</style><AdminPage /><DailyVisitorGraph /></>;
   }
 
   return <>
