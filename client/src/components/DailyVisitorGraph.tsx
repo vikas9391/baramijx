@@ -43,32 +43,40 @@ export default function DailyVisitorGraph() {
 
   useEffect(() => {
     let cancelled = false;
+    let attempt = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
     setLoading(true); setError('');
-    // AdminPage already verifies the session before this component is rendered.
-    // Avoid a second /api/admin/me request here: immediately after login that
-    // extra request can race the newly-created session cookie and briefly report
-    // "Not authenticated" even though the dashboard itself is authenticated.
-    fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' })
-      .then(async (response) => {
+
+    const load = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, {
+          credentials: 'include',
+          cache: 'no-store',
+        });
         if (!response.ok) {
           const raw = await response.text();
+          if (response.status === 401 && attempt < 4 && !cancelled) {
+            attempt += 1;
+            retryTimer = setTimeout(load, 800);
+            return;
+          }
           throw new Error(`Unable to load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`);
         }
-        return response.json() as Promise<TrackingInfo>;
-      })
-      .then((result) => {
+        const result = await response.json() as TrackingInfo;
         if (!cancelled) {
           setTrackingStart(result.start_date);
           setData(Array.isArray(result.days) ? result.days : []);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
+      } finally {
+        if (!cancelled && attempt >= 4) setLoading(false);
+      }
+      if (!cancelled && attempt < 4) setLoading(false);
+    };
+
+    void load();
+    return () => { cancelled = true; if (retryTimer) clearTimeout(retryTimer); };
   }, [selectedYear, selectedMonth]);
 
   const start = useMemo(() => { const [year, month] = trackingStart.split('-').map(Number); return { year: year || current.year, month: month || current.month }; }, [trackingStart, current.year, current.month]);
