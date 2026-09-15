@@ -26,7 +26,14 @@ function safeEqual(a, b) {
 }
 function makeAdminToken() { return crypto.createHmac('sha256', SESSION_SECRET || '').update(String(ADMIN_USERNAME || '')).digest('hex'); }
 function parseCookies(header) { const cookies = {}; for (const part of (header || '').split(';')) { const [key, ...value] = part.trim().split('='); if (key) cookies[key] = decodeURIComponent(value.join('=')); } return cookies; }
-function isAdminAuthenticated(req) { if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) return false; const cookies = parseCookies(req.headers.cookie); const [username, signature] = (cookies.admin_session || '').split('.'); return username === ADMIN_USERNAME && safeEqual(signature, makeAdminToken()); }
+function isAdminAuthenticated(req) {
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) return false;
+  const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+  if (safeEqual(bearer, makeAdminToken())) return true;
+  const cookies = parseCookies(req.headers.cookie);
+  const [username, signature] = (cookies.admin_session || '').split('.');
+  return username === ADMIN_USERNAME && safeEqual(signature, makeAdminToken());
+}
 function requireAdmin(req, res, next) { if (!isAdminAuthenticated(req)) return res.status(401).json({ error: 'Unauthorized.' }); next(); }
 
 async function initVisitorTable() {
@@ -56,7 +63,7 @@ app.use((req, res, next) => {
     if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
     if (req.method === 'OPTIONS') return res.sendStatus(204);
   }
@@ -67,8 +74,9 @@ app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) return res.status(503).json({ error: 'Admin authentication is not configured.' });
   if (!safeEqual(username, ADMIN_USERNAME) || !safeEqual(password, ADMIN_PASSWORD)) return res.status(401).json({ error: 'Invalid username or password.' });
-  res.setHeader('Set-Cookie', `admin_session=${encodeURIComponent(`${ADMIN_USERNAME}.${makeAdminToken()}`)}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=28800`);
-  return res.json({ success: true });
+  const token = makeAdminToken();
+  res.setHeader('Set-Cookie', `admin_session=${encodeURIComponent(`${ADMIN_USERNAME}.${token}`)}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=28800`);
+  return res.json({ success: true, admin_token: token });
 });
 
 app.post('/api/visitor/visit', async (req, res) => {
