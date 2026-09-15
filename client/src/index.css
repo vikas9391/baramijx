@@ -42,7 +42,6 @@
 }
 
 :root {
-  /* Light campaign theme: warm paper + dark ink + PML gold. */
   --primary: #F8F7F5;
   --primary-foreground: #0F1419;
   --accent: #D4A574;
@@ -55,7 +54,6 @@
   --chart-4: #D97706;
   --chart-5: #F59E0B;
   --radius: 0.65rem;
-
   --background: #F8F7F5;
   --foreground: #0F1419;
   --card: #FFFFFF;
@@ -80,7 +78,6 @@
 }
 
 .dark {
-  /* Dark campaign theme: deep navy + warm gold. */
   --primary: #0F1419;
   --primary-foreground: #F8F7F5;
   --accent: #D4A574;
@@ -92,7 +89,6 @@
   --chart-3: #9CA3AF;
   --chart-4: #F59E0B;
   --chart-5: #D97706;
-
   --background: #0B1015;
   --foreground: #F8F7F5;
   --card: #151C24;
@@ -117,15 +113,8 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-  }
-
+  * { @apply border-border outline-ring/50; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     @apply bg-background text-foreground;
     min-width: 320px;
@@ -134,128 +123,69 @@
     -webkit-font-smoothing: antialiased;
     transition: background-color 300ms ease, color 300ms ease;
   }
-
-  ::selection {
-    background: #D4A574;
-    color: #0F1419;
-  }
-
-  html[dir="rtl"] body {
-    text-align: right;
-  }
-
-  html[dir="rtl"] .text-left {
-    text-align: right !important;
-  }
-
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
-  }
-
-  h1 {
-    @apply text-4xl md:text-5xl;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl;
-  }
-
-  img {
-    max-width: 100%;
-  }
-
-  :focus-visible {
-    outline: 3px solid #D4A574;
-    outline-offset: 3px;
-  }
+  ::selection { background: #D4A574; color: #0F1419; }
+  html[dir="rtl"] body { text-align: right; }
+  html[dir="rtl"] .text-left { text-align: right !important; }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), [type="reset"]:not(:disabled), a[href], select:not(:disabled), input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled) { @apply cursor-pointer; }
+  h1, h2, h3, h4, h5, h6 { @apply font-bold tracking-tight; }
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+  img { max-width: 100%; }
+  :focus-visible { outline: 3px solid #D4A574; outline-offset: 3px; }
 }
 
 @layer components {
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1280px;
-    }
-  }
-
-  .accent-bar {
-    @apply h-1 bg-accent w-16 mt-2;
-  }
-
-  .section-title {
-    @apply text-3xl font-bold text-foreground mb-2;
-  }
-
-  .section-subtitle {
-    @apply text-lg text-muted-foreground mb-8;
-  }
-
-  .program-card {
-    @apply bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-border;
-  }
-
-  .program-card-icon {
-    @apply w-16 h-16 mb-4;
-  }
-
-  .cta-button {
-    @apply px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-all duration-200 active:scale-[0.98];
-  }
-
-  .nav-button {
-    @apply px-4 py-2 text-foreground hover:text-accent transition-colors duration-200;
-  }
+  .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+  .flex { min-height: 0; min-width: 0; }
+  @media (min-width: 640px) { .container { padding-left: 1.5rem; padding-right: 1.5rem; } }
+  @media (min-width: 1024px) { .container { padding-left: 2rem; padding-right: 2rem; max-width: 1280px; } }
+  .accent-bar { @apply h-1 bg-accent w-16 mt-2; }
+  .section-title { @apply text-3xl font-bold text-foreground mb-2; }
+  .section-subtitle { @apply text-lg text-muted-foreground mb-8; }
+  .program-card { @apply bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-border; }
+  .program-card-icon { @apply w-16 h-16 mb-4; }
+  .cta-button { @apply px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-all duration-200 active:scale-[0.98]; }
+  .nav-button { @apply px-4 py-2 text-foreground hover:text-accent transition-colors duration-200; }
 }
 
-/* Keep submit text readable when the campaign CTA theme is overridden. */
-form button.cta-button[type="submit"] {
+/* Admin login is deliberately isolated from the public campaign theme. */
+form:has(input[autocomplete="username"]) {
+  color: #0F1419 !important;
+  background: #FFFFFF !important;
+  color-scheme: light !important;
+}
+form:has(input[autocomplete="username"]) * {
+  color: #0F1419 !important;
+  -webkit-text-fill-color: #0F1419 !important;
+}
+form:has(input[autocomplete="username"]) input {
+  color: #0F1419 !important;
+  -webkit-text-fill-color: #0F1419 !important;
+  background-color: #FFFFFF !important;
+  caret-color: #0F1419 !important;
+}
+form:has(input[autocomplete="username"]) input::placeholder {
+  color: #6B7280 !important;
+  -webkit-text-fill-color: #6B7280 !important;
+}
+form:has(input[autocomplete="username"]) button[type="submit"] {
+  background: #0F1419 !important;
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+form:has(input[autocomplete="username"]) button[type="button"] {
+  color: #4B5563 !important;
+  -webkit-text-fill-color: #4B5563 !important;
+  background: transparent !important;
+}
+form:has(input[autocomplete="username"]) svg {
+  color: #4B5563 !important;
+  stroke: #4B5563 !important;
 }
 
 @media (min-width: 1024px) {
-  #campaign-gallery [class*="lg:columns-4"] {
-    column-count: 3;
-  }
-
-  #campaign-gallery > div {
-    max-width: 1400px;
-  }
+  #campaign-gallery [class*="lg:columns-4"] { column-count: 3; }
+  #campaign-gallery > div { max-width: 1400px; }
 }
