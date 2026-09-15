@@ -139,12 +139,12 @@ app.get('/api/admin/visitors/daily', requireAdmin, async (req, res) => {
         TO_CHAR(day, 'YYYY-MM-DD') AS date,
         COALESCE(v.visits, 0)::text AS visitors,
         TO_CHAR(tracking.start_date, 'YYYY-MM-DD') AS start_date
-      FROM generate_series(
+      FROM tracking
+      CROSS JOIN LATERAL generate_series(
         GREATEST(make_date($1::int, $2::int, 1), tracking.start_date),
         LEAST((make_date($1::int, $2::int, 1) + INTERVAL '1 month - 1 day')::date, CURRENT_DATE),
         interval '1 day'
       ) AS day
-      CROSS JOIN tracking
       LEFT JOIN visitor_daily v ON v.visit_date = day::date
       ORDER BY day ASC
     `, [requestedYear, requestedMonth]);
