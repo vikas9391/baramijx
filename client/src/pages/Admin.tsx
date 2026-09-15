@@ -13,14 +13,20 @@ const API_BASE_URL = (() => {
   if (!configured) return typeof window !== 'undefined' ? window.location.origin : '';
   return configured.replace(/\/api\/chat\/?$/, '').replace(/\/$/, '');
 })();
+const ADMIN_TOKEN_KEY = 'baramijx_admin_token';
 
 async function api(path: string, options: RequestInit = {}) {
   let response: Response;
   try {
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+      },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -102,8 +108,15 @@ export default function AdminPage() {
 
   async function handleLogin(event: FormEvent) {
     event.preventDefault(); setLoginError('');
-    try { await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) }); setAuthenticated(true); setPassword(''); await loadDashboard(); }
-    catch (error) { setLoginError(error instanceof Error ? error.message : 'Unable to sign in.'); }
+    try {
+      const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+      if (data?.admin_token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.admin_token);
+      setAuthenticated(true);
+      setPassword('');
+      await loadDashboard();
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : 'Unable to sign in.');
+    }
   }
 
   async function saveVisitorCount(event: FormEvent) {
@@ -118,7 +131,11 @@ export default function AdminPage() {
     finally { setVisitorSaving(false); }
   }
 
-  async function handleLogout() { await api('/api/admin/logout', { method: 'POST' }).catch(() => undefined); setAuthenticated(false); setStats(null); setVisitorStats(null); setConversations([]); setProblems([]); }
+  async function handleLogout() {
+    await api('/api/admin/logout', { method: 'POST' }).catch(() => undefined);
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    setAuthenticated(false); setStats(null); setVisitorStats(null); setConversations([]); setProblems([]);
+  }
   async function openConversation(id: string) { try { setSelectedConversation(await api(`/api/admin/conversations/${id}`)); } catch (e) { window.alert(e instanceof Error ? e.message : 'Unable to load conversation.'); } }
   async function updateProblem(id: string, status: Problem['status']) { try { await api(`/api/admin/problems/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }); await loadDashboard(); } catch (e) { window.alert(e instanceof Error ? e.message : 'Unable to update problem.'); } }
   async function deleteProblem(id: string) { if (!window.confirm('Delete this problem report?')) return; try { await api(`/api/admin/problems/${id}`, { method: 'DELETE' }); await loadDashboard(); } catch (e) { window.alert(e instanceof Error ? e.message : 'Unable to delete problem.'); } }
@@ -128,7 +145,7 @@ export default function AdminPage() {
   const filteredProblems = useMemo(() => { const q = problemSearch.trim().toLowerCase(); return q ? problems.filter(x => `${x.name} ${x.commune} ${x.description} ${x.status}`.toLowerCase().includes(q)) : problems; }, [problemSearch, problems]);
 
   if (checking) return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-900">Loading admin panel...</div>;
-  if (!authenticated) return <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-4" dir="ltr"><form onSubmit={handleLogin} className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-7 text-slate-900"><div className="flex items-center justify-between mb-6"><Link href="/" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold !text-slate-900 hover:bg-slate-50">← Back to website</Link><span className="text-xs text-slate-400">Admin</span></div><div className="text-center mb-7"><div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl">P</div><h1 className="text-3xl font-bold text-slate-900">Admin Portal</h1><p className="text-sm text-slate-600 mt-2">Private campaign administration</p></div><label className="block mb-4"><span className="text-sm font-medium text-slate-900">Username</span><input value={username} onChange={e => setUsername(e.target.value)} className="mt-1.5 w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400" autoComplete="username" /></label><label className="block mb-4"><span className="text-sm font-medium text-slate-900">Password</span><div className="relative mt-1.5"><input value={password} onChange={e => setPassword(e.target.value)} type={passwordVisible ? 'text' : 'password'} className="w-full px-4 py-3 pr-12 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400" autoComplete="current-password" /><button type="button" aria-label={passwordVisible ? 'Hide password' : 'Show password'} onClick={() => setPasswordVisible(v => !v)} className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-slate-600 hover:text-slate-900" tabIndex={-1}><Icon name={passwordVisible ? 'eyeoff' : 'eye'} /></button></div></label>{loginError && <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700 break-words">{loginError}</div>}<button className="cta-button w-full !rounded-xl !py-3.5 !bg-slate-900 !text-white" type="submit">Sign in to dashboard</button></form></div>;
+  if (!authenticated) return <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-4" dir="ltr"><form onSubmit={handleLogin} className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-7 text-slate-900"><div className="flex items-center justify-between mb-6"><Link href="/" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold !text-slate-900 hover:bg-slate-50">← Back to website</Link><span className="text-xs text-slate-400">Admin</span></div><div className="text-center mb-7"><div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl">P</div><h1 className="text-3xl font-bold text-slate-900">Admin Portal</h1><p className="text-sm text-slate-600 mt-2">Private campaign administration</p></div><label className="block mb-4"><span className="text-sm font-medium text-slate-900">Username</span><input value={username} onChange={e => setUsername(e.target.value)} className="mt-1.5 w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400" autoComplete="username" /></label><label className="block mb-4"><span className="text-sm font-medium text-slate-900">Password</span><div className="relative mt-1.5"><input value={password} onChange={e => setPassword(e.target.value)} type={passwordVisible ? 'text' : 'password'} className="w-full px-4 py-3 pr-12 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400" autoComplete="current-password" /><button type="button" aria-label={passwordVisible ? 'Hide password' : 'Show password'} onClick={() => setPasswordVisible(v => !v)} className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-slate-600 hover:text-slate-900" tabIndex={-1}><Icon name={passwordVisible ? 'eyeoff' : 'eye'} /></button></div></label>{loginError && <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700 break-words">{loginError}</div>}<button type="submit" className="admin-login-submit w-full rounded-xl py-3.5" style={{ backgroundColor: '#0F172A', color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF', fontWeight: 700, fontSize: '16px', lineHeight: 1.2, minHeight: '52px', border: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 1, cursor: 'pointer' }}>Sign in to dashboard</button></form></div>;
 
   const nav: { id: Tab; label: string; icon: 'grid' | 'chat' | 'flag' }[] = [{ id: 'overview', label: 'Overview', icon: 'grid' }, { id: 'chats', label: 'Conversations', icon: 'chat' }, { id: 'problems', label: 'Problem Reports', icon: 'flag' }];
   return <div className="min-h-screen bg-slate-50 text-slate-900" dir="ltr">
