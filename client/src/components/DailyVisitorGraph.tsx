@@ -9,22 +9,16 @@ const API_BASE_URL = (() => {
 })();
 
 type DailyVisitor = { date: string; visitors: string };
+type TrackingInfo = { year: number; month: number; start_date: string; days: DailyVisitor[] };
 
-type MonthOption = { year: number; month: number; label: string };
-
-function getCurrentMonth() {
-  const now = new Date();
-  return { year: now.getFullYear(), month: now.getMonth() + 1 };
-}
-
-function monthLabel(year: number, month: number) {
-  return new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-}
+function currentMonth() { const now = new Date(); return { year: now.getFullYear(), month: now.getMonth() + 1 }; }
+function labelForMonth(year: number, month: number) { return new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }); }
 
 export default function DailyVisitorGraph() {
-  const current = getCurrentMonth();
+  const current = currentMonth();
   const [selectedYear, setSelectedYear] = useState(current.year);
   const [selectedMonth, setSelectedMonth] = useState(current.month);
+  const [trackingStart, setTrackingStart] = useState(`${current.year}-${String(current.month).padStart(2, '0')}-01`);
   const [data, setData] = useState<DailyVisitor[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,84 +36,41 @@ export default function DailyVisitorGraph() {
       return () => { target.remove(); setHost(null); };
     };
     const cleanup = findTarget();
-    const observer = cleanup ? undefined : new MutationObserver(() => {
-      const found = findTarget();
-      if (found) observer.disconnect();
-    });
+    const observer = cleanup ? undefined : new MutationObserver(() => { const found = findTarget(); if (found) observer.disconnect(); });
     observer?.observe(document.body, { childList: true, subtree: true });
     return () => { observer?.disconnect(); cleanup?.(); };
   }, []);
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     fetch(`${API_BASE_URL}/api/admin/me`, { credentials: 'include' })
-      .then((response) => {
-        if (!response.ok) throw new Error('Not authenticated');
-        return fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' });
-      })
-      .then(async (response) => {
-        if (!response.ok) {
-          const raw = await response.text();
-          throw new Error(`Unable to load ${monthLabel(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((result) => {
-        if (!cancelled) setData(Array.isArray(result?.days) ? result.days : []);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
-      })
+      .then((response) => { if (!response.ok) throw new Error('Not authenticated'); return fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' }); })
+      .then(async (response) => { if (!response.ok) { const raw = await response.text(); throw new Error(`Unable to load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`); } return response.json() as Promise<TrackingInfo>; })
+      .then((result) => { if (!cancelled) { setTrackingStart(result.start_date); setData(Array.isArray(result.days) ? result.days : []); } })
+      .catch((err) => { if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.'); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [selectedYear, selectedMonth]);
 
-  const years = useMemo(() => {
-    // Visitor tracking begins with the current month. As time passes, earlier
-    // months are never fabricated; the list simply grows with real months.
-    const result: number[] = [];
-    for (let year = current.year; year <= current.year; year += 1) result.push(year);
-    return result;
-  }, [current.year]);
+  const start = useMemo(() => { const [year, month] = trackingStart.split('-').map(Number); return { year: year || current.year, month: month || current.month }; }, [trackingStart, current.year, current.month]);
+  const years = useMemo(() => Array.from({ length: Math.max(1, current.year - start.year + 1) }, (_, i) => start.year + i), [start.year, current.year]);
+  const months = useMemo(() => {
+    const first = selectedYear === start.year ? start.month : 1;
+    const last = selectedYear === current.year ? current.month : 12;
+    if (first > last) return [];
+    return Array.from({ length: last - first + 1 }, (_, i) => first + i);
+  }, [selectedYear, start.year, start.month, current.year, current.month]);
 
-  const months: MonthOption[] = useMemo(() => {
-    const maxMonth = selectedYear === current.year ? current.month : 12;
-    return Array.from({ length: maxMonth }, (_, index) => {
-      const month = index + 1;
-      return { year: selectedYear, month, label: monthLabel(selectedYear, month) };
-    }).filter((option) => selectedYear > current.year || option.month >= current.month || selectedYear < current.year);
-  }, [selectedYear, current.year, current.month]);
-
-  // The tracker was introduced this month, so initially only this month is selectable.
-  // On future months/years the selectors automatically expose months that have existed.
-  const chartData = data.map((item) => ({
-    ...item,
-    visitors: Number(item.visitors) || 0,
-    label: new Date(`${item.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-  }));
-
+  const chartData = data.map((item) => ({ ...item, visitors: Number(item.visitors) || 0, label: new Date(`${item.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) }));
   if (!host) return null;
+
   const chart: ReactNode = <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6 text-slate-900" dir="ltr">
     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h2 className="text-lg font-bold">Daily Visitors</h2>
-        <p className="text-sm text-slate-500 mt-1">Actual visitor sessions recorded for the selected month.</p>
-      </div>
+      <div><h2 className="text-lg font-bold">Daily Visitors</h2><p className="text-sm text-slate-500 mt-1">Actual visitor sessions recorded by day. Tracking starts from {labelForMonth(start.year, start.month)}.</p></div>
       <div className="flex gap-2" dir="ltr">
-        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
-          Month
-          <select value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} className="h-10 min-w-32 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">
-            {months.map((option) => <option key={`${option.year}-${option.month}`} value={option.month}>{option.label.split(' ')[0]}</option>)}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
-          Year
-          <select value={selectedYear} onChange={(e) => { const year = Number(e.target.value); setSelectedYear(year); setSelectedMonth(year === current.year ? current.month : 1); }} className="h-10 min-w-24 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">
-            {years.map((year) => <option key={year} value={year}>{year}</option>)}
-          </select>
-        </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">Month<select value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} className="h-10 min-w-28 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">{months.map((month) => <option key={month} value={month}>{new Date(2000, month - 1, 1).toLocaleDateString(undefined, { month: 'short' })}</option>)}</select></label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">Year<select value={selectedYear} onChange={(e) => { const year = Number(e.target.value); setSelectedYear(year); setSelectedMonth(year === current.year ? current.month : year === start.year ? start.month : 1); }} className="h-10 min-w-24 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">{years.map((year) => <option key={year} value={year}>{year}</option>)}</select></label>
       </div>
     </div>
     {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error:</strong><div className="mt-1 font-mono text-xs whitespace-pre-wrap">{error}</div></div> : loading ? <div className="h-72 flex items-center justify-center text-sm text-slate-500">Loading visitor data...</div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded for this month.</div>}
