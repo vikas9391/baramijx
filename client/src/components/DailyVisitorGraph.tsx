@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -10,9 +10,24 @@ const API_BASE_URL = (() => {
 
 type DailyVisitor = { date: string; visitors: string };
 
+type MonthOption = { year: number; month: number; label: string };
+
+function getCurrentMonth() {
+  const now = new Date();
+  return { year: now.getFullYear(), month: now.getMonth() + 1 };
+}
+
+function monthLabel(year: number, month: number) {
+  return new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+}
+
 export default function DailyVisitorGraph() {
+  const current = getCurrentMonth();
+  const [selectedYear, setSelectedYear] = useState(current.year);
+  const [selectedMonth, setSelectedMonth] = useState(current.month);
   const [data, setData] = useState<DailyVisitor[]>([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const [host, setHost] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -36,24 +51,78 @@ export default function DailyVisitorGraph() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError('');
     fetch(`${API_BASE_URL}/api/admin/me`, { credentials: 'include' })
       .then((response) => {
         if (!response.ok) throw new Error('Not authenticated');
-        return fetch(`${API_BASE_URL}/api/admin/visitors/daily?days=30`, { credentials: 'include' });
+        return fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' });
       })
       .then(async (response) => {
-        if (!response.ok) throw new Error(`Unable to load daily visitors (${response.status})`);
-        const result = await response.json();
-        setData(Array.isArray(result?.days) ? result.days : []);
+        if (!response.ok) {
+          const raw = await response.text();
+          throw new Error(`Unable to load ${monthLabel(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`);
+        }
+        return response.json();
       })
-      .catch((err) => setError(err instanceof Error ? err.message : 'Unable to load daily visitors.'));
-  }, []);
+      .then((result) => {
+        if (!cancelled) setData(Array.isArray(result?.days) ? result.days : []);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [selectedYear, selectedMonth]);
+
+  const years = useMemo(() => {
+    // Visitor tracking begins with the current month. As time passes, earlier
+    // months are never fabricated; the list simply grows with real months.
+    const result: number[] = [];
+    for (let year = current.year; year <= current.year; year += 1) result.push(year);
+    return result;
+  }, [current.year]);
+
+  const months: MonthOption[] = useMemo(() => {
+    const maxMonth = selectedYear === current.year ? current.month : 12;
+    return Array.from({ length: maxMonth }, (_, index) => {
+      const month = index + 1;
+      return { year: selectedYear, month, label: monthLabel(selectedYear, month) };
+    }).filter((option) => selectedYear > current.year || option.month >= current.month || selectedYear < current.year);
+  }, [selectedYear, current.year, current.month]);
+
+  // The tracker was introduced this month, so initially only this month is selectable.
+  // On future months/years the selectors automatically expose months that have existed.
+  const chartData = data.map((item) => ({
+    ...item,
+    visitors: Number(item.visitors) || 0,
+    label: new Date(`${item.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+  }));
 
   if (!host) return null;
-  const chartData = data.map((item) => ({ ...item, visitors: Number(item.visitors) || 0, label: new Date(`${item.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) }));
   const chart: ReactNode = <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6 text-slate-900" dir="ltr">
-    <div className="mb-4"><h2 className="text-lg font-bold">Daily Visitors</h2><p className="text-sm text-slate-500 mt-1">Actual visitor sessions recorded for the last 30 days.</p></div>
-    {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error:</strong><div className="mt-1 font-mono text-xs whitespace-pre-wrap">{error}</div></div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded yet.</div>}
+    <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 className="text-lg font-bold">Daily Visitors</h2>
+        <p className="text-sm text-slate-500 mt-1">Actual visitor sessions recorded for the selected month.</p>
+      </div>
+      <div className="flex gap-2" dir="ltr">
+        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+          Month
+          <select value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} className="h-10 min-w-32 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">
+            {months.map((option) => <option key={`${option.year}-${option.month}`} value={option.month}>{option.label.split(' ')[0]}</option>)}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+          Year
+          <select value={selectedYear} onChange={(e) => { const year = Number(e.target.value); setSelectedYear(year); setSelectedMonth(year === current.year ? current.month : 1); }} className="h-10 min-w-24 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">
+            {years.map((year) => <option key={year} value={year}>{year}</option>)}
+          </select>
+        </label>
+      </div>
+    </div>
+    {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error:</strong><div className="mt-1 font-mono text-xs whitespace-pre-wrap">{error}</div></div> : loading ? <div className="h-72 flex items-center justify-center text-sm text-slate-500">Loading visitor data...</div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded for this month.</div>}
   </section>;
   return createPortal(chart, host);
 }
