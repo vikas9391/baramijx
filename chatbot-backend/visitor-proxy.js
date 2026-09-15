@@ -123,25 +123,27 @@ app.get('/api/admin/visitors/daily', requireAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Future months are not available.' });
     }
     const result = await pool.query(`
-      SELECT TO_CHAR(day, 'YYYY-MM-DD') AS date, COALESCE(v.visits, 0)::text AS visitors
+      WITH tracking AS (
+        SELECT COALESCE(MIN(visit_date), make_date($1::int, $2::int, 1)) AS start_date
+        FROM visitor_daily
+      )
+      SELECT
+        TO_CHAR(day, 'YYYY-MM-DD') AS date,
+        COALESCE(v.visits, 0)::text AS visitors,
+        TO_CHAR(tracking.start_date, 'YYYY-MM-DD') AS start_date
       FROM generate_series(
-        make_date($1::int, $2::int, 1),
-        LEAST(
-          (make_date($1::int, $2::int, 1) + INTERVAL '1 month - 1 day')::date,
-          CURRENT_DATE
-        ),
+        GREATEST(make_date($1::int, $2::int, 1), tracking.start_date),
+        LEAST((make_date($1::int, $2::int, 1) + INTERVAL '1 month - 1 day')::date, CURRENT_DATE),
         interval '1 day'
       ) AS day
+      CROSS JOIN tracking
       LEFT JOIN visitor_daily v ON v.visit_date = day::date
-      WHERE day::date >= COALESCE((SELECT MIN(visit_date) FROM visitor_daily), make_date($1::int, $2::int, 1))
       ORDER BY day ASC
     `, [requestedYear, requestedMonth]);
-    res.json({ year: requestedYear, month: requestedMonth, days: result.rows });
+    const startDate = result.rows[0]?.start_date || `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
+    res.json({ year: requestedYear, month: requestedMonth, start_date: startDate, days: result.rows.map(({ date, visitors }) => ({ date, visitors })) });
   } catch (err) { console.error('Daily visitor graph error:', err); res.status(500).json({ error: 'Unable to load daily visitor data.' }); }
 });
-
-app.patch('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
-app.post('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
 
 async function updateDisplayedVisitorCount(req, res) {
   try {
@@ -153,6 +155,9 @@ async function updateDisplayedVisitorCount(req, res) {
     res.json(result.rows[0]);
   } catch (err) { console.error('Admin visitor counter update error:', err); res.status(500).json({ error: 'Unable to update visitor counter.' }); }
 }
+
+app.patch('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
+app.post('/api/admin/visitors', requireAdmin, updateDisplayedVisitorCount);
 
 app.use(async (req, res) => {
   try {
