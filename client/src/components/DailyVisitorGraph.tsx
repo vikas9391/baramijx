@@ -44,12 +44,30 @@ export default function DailyVisitorGraph() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true); setError('');
-    fetch(`${API_BASE_URL}/api/admin/me`, { credentials: 'include' })
-      .then((response) => { if (!response.ok) throw new Error('Not authenticated'); return fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' }); })
-      .then(async (response) => { if (!response.ok) { const raw = await response.text(); throw new Error(`Unable to load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`); } return response.json() as Promise<TrackingInfo>; })
-      .then((result) => { if (!cancelled) { setTrackingStart(result.start_date); setData(Array.isArray(result.days) ? result.days : []); } })
-      .catch((err) => { if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.'); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+    // AdminPage already verifies the session before this component is rendered.
+    // Avoid a second /api/admin/me request here: immediately after login that
+    // extra request can race the newly-created session cookie and briefly report
+    // "Not authenticated" even though the dashboard itself is authenticated.
+    fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, { credentials: 'include' })
+      .then(async (response) => {
+        if (!response.ok) {
+          const raw = await response.text();
+          throw new Error(`Unable to load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`);
+        }
+        return response.json() as Promise<TrackingInfo>;
+      })
+      .then((result) => {
+        if (!cancelled) {
+          setTrackingStart(result.start_date);
+          setData(Array.isArray(result.days) ? result.days : []);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => { cancelled = true; };
   }, [selectedYear, selectedMonth]);
 
