@@ -115,9 +115,9 @@ form:has(input[autocomplete="username"]) input::placeholder {
   -webkit-text-fill-color: #6B7280 !important;
 }
 form:has(input[autocomplete="username"]) button[type="submit"] {
-  background: #FFFFFF !important;
-  color: #0F1419 !important;
-  -webkit-text-fill-color: #0F1419 !important;
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   opacity: 1 !important;
   text-shadow: none !important;
   -webkit-text-stroke: 0 !important;
