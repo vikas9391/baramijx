@@ -7,6 +7,7 @@ const API_BASE_URL = (() => {
   if (!configured) return typeof window !== 'undefined' ? window.location.origin : '';
   return configured.replace(/\/api\/chat\/?$/, '').replace(/\/$/, '');
 })();
+const ADMIN_TOKEN_KEY = 'baramijx_admin_token';
 
 type DailyVisitor = { date: string; visitors: string };
 type TrackingInfo = { year: number; month: number; start_date: string; days: DailyVisitor[] };
@@ -43,40 +44,43 @@ export default function DailyVisitorGraph() {
 
   useEffect(() => {
     let cancelled = false;
-    let attempt = 0;
-    let retryTimer: ReturnType<typeof setTimeout> | undefined;
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
+    setData([]);
 
     const load = async () => {
       try {
+        const token = typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
         const response = await fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, {
           credentials: 'include',
+          headers,
           cache: 'no-store',
         });
+        const raw = await response.text();
+        let result: TrackingInfo | { error?: string } = {};
+        try { result = raw ? JSON.parse(raw) : {}; } catch { result = { error: raw }; }
         if (!response.ok) {
-          const raw = await response.text();
-          if (response.status === 401 && attempt < 4 && !cancelled) {
-            attempt += 1;
-            retryTimer = setTimeout(load, 800);
-            return;
+          if (response.status === 401) {
+            throw new Error('Admin authentication expired or is not available to the graph. Please sign in again.');
           }
-          throw new Error(`Unable to load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${raw || response.statusText}`);
+          const serverMessage = 'error' in result && result.error ? result.error : response.statusText;
+          throw new Error(`Could not load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${serverMessage}`);
         }
-        const result = await response.json() as TrackingInfo;
         if (!cancelled) {
-          setTrackingStart(result.start_date);
-          setData(Array.isArray(result.days) ? result.days : []);
+          const daily = result as TrackingInfo;
+          setTrackingStart(daily.start_date);
+          setData(Array.isArray(daily.days) ? daily.days : []);
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
       } finally {
-        if (!cancelled && attempt >= 4) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-      if (!cancelled && attempt < 4) setLoading(false);
     };
 
     void load();
-    return () => { cancelled = true; if (retryTimer) clearTimeout(retryTimer); };
+    return () => { cancelled = true; };
   }, [selectedYear, selectedMonth]);
 
   const start = useMemo(() => { const [year, month] = trackingStart.split('-').map(Number); return { year: year || current.year, month: month || current.month }; }, [trackingStart, current.year, current.month]);
@@ -99,7 +103,7 @@ export default function DailyVisitorGraph() {
         <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">Year<select value={selectedYear} onChange={(e) => { const year = Number(e.target.value); setSelectedYear(year); setSelectedMonth(year === current.year ? current.month : year === start.year ? start.month : 1); }} className="h-10 min-w-24 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900">{years.map((year) => <option key={year} value={year}>{year}</option>)}</select></label>
       </div>
     </div>
-    {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error:</strong><div className="mt-1 font-mono text-xs whitespace-pre-wrap">{error}</div></div> : loading ? <div className="h-72 flex items-center justify-center text-sm text-slate-500">Loading visitor data...</div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded for this month.</div>}
+    {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error</strong><div className="mt-2 whitespace-pre-wrap">{error}</div></div> : loading ? <div className="h-72 flex items-center justify-center text-sm text-slate-500">Loading visitor data...</div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded for this month.</div>}
   </section>;
   return createPortal(chart, host);
 }
