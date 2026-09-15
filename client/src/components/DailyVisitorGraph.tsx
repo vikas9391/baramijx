@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const API_BASE_URL = (() => {
@@ -12,7 +13,27 @@ type DailyVisitor = { date: string; visitors: string };
 export default function DailyVisitorGraph() {
   const [data, setData] = useState<DailyVisitor[]>([]);
   const [error, setError] = useState('');
-  const [open, setOpen] = useState(true);
+  const [host, setHost] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const findTarget = () => {
+      const heading = Array.from(document.querySelectorAll('h2')).find((node) => node.textContent?.trim() === 'Website Visitor Counter');
+      const section = heading?.closest('section');
+      if (!section?.parentElement) return;
+      const target = document.createElement('div');
+      target.className = 'mb-6';
+      section.parentElement.insertBefore(target, section);
+      setHost(target);
+      return () => { target.remove(); setHost(null); };
+    };
+    const cleanup = findTarget();
+    const observer = cleanup ? undefined : new MutationObserver(() => {
+      const found = findTarget();
+      if (found) observer.disconnect();
+    });
+    observer?.observe(document.body, { childList: true, subtree: true });
+    return () => { observer?.disconnect(); cleanup?.(); };
+  }, []);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/admin/me`, { credentials: 'include' })
@@ -28,15 +49,11 @@ export default function DailyVisitorGraph() {
       .catch((err) => setError(err instanceof Error ? err.message : 'Unable to load daily visitors.'));
   }, []);
 
-  if (!open) return <button type="button" onClick={() => setOpen(true)} className="fixed bottom-4 right-4 z-[90] rounded-xl bg-slate-950 text-white px-4 py-3 text-sm font-semibold shadow-xl">Daily Visitors</button>;
-
+  if (!host) return null;
   const chartData = data.map((item) => ({ ...item, visitors: Number(item.visitors) || 0, label: new Date(`${item.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) }));
-
-  return <section className="fixed bottom-4 right-4 z-[90] w-[min(430px,calc(100vw-2rem))] bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 text-slate-900" dir="ltr">
-    <div className="flex items-center justify-between mb-3">
-      <div><h2 className="font-bold">Daily Visitors</h2><p className="text-xs text-slate-500 mt-0.5">Last 30 days</p></div>
-      <button type="button" onClick={() => setOpen(false)} aria-label="Close daily visitor graph" className="w-8 h-8 rounded-lg border text-slate-600 hover:bg-slate-50">×</button>
-    </div>
-    {error ? <p className="text-xs text-red-600 break-words">{error}</p> : chartData.length ? <div className="h-48"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 10 }}/><YAxis allowDecimals={false} tick={{ fontSize: 10 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={2.5} dot={{ r: 2 }} activeDot={{ r: 4 }}/></LineChart></ResponsiveContainer></div> : <p className="h-48 flex items-center justify-center text-xs text-slate-500">No visitor data recorded yet.</p>}
+  const chart: ReactNode = <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6 text-slate-900" dir="ltr">
+    <div className="mb-4"><h2 className="text-lg font-bold">Daily Visitors</h2><p className="text-sm text-slate-500 mt-1">Actual visitor sessions recorded for the last 30 days.</p></div>
+    {error ? <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 break-words"><strong>Daily visitor graph error:</strong><div className="mt-1 font-mono text-xs whitespace-pre-wrap">{error}</div></div> : chartData.length ? <div className="h-72 w-full"><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" tick={{ fontSize: 11 }}/><YAxis allowDecimals={false} tick={{ fontSize: 11 }}/><Tooltip labelFormatter={(_, payload) => payload?.[0]?.payload?.date || ''}/><Line type="monotone" dataKey="visitors" name="Visitors" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }}/></LineChart></ResponsiveContainer></div> : <div className="h-72 flex items-center justify-center text-sm text-slate-500">No visitor data recorded yet.</div>}
   </section>;
+  return createPortal(chart, host);
 }
