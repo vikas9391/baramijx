@@ -41,6 +41,10 @@ async function initVisitorTable() {
     INSERT INTO visitor_counter (id, actual_visits, display_offset)
     VALUES (1, 0, 0)
     ON CONFLICT (id) DO NOTHING;
+    CREATE TABLE IF NOT EXISTS visitor_daily (
+      visit_date DATE PRIMARY KEY,
+      visits BIGINT NOT NULL DEFAULT 0
+    );
   `);
 }
 
@@ -59,17 +63,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Handle admin login at the public gateway so the session cookie works when the
-// frontend and backend are on different origins. The original server keeps the
-// same authentication rules for all subsequent admin requests.
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body || {};
-  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) {
-    return res.status(503).json({ error: 'Admin authentication is not configured.' });
-  }
-  if (!safeEqual(username, ADMIN_USERNAME) || !safeEqual(password, ADMIN_PASSWORD)) {
-    return res.status(401).json({ error: 'Invalid username or password.' });
-  }
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !SESSION_SECRET) return res.status(503).json({ error: 'Admin authentication is not configured.' });
+  if (!safeEqual(username, ADMIN_USERNAME) || !safeEqual(password, ADMIN_PASSWORD)) return res.status(401).json({ error: 'Invalid username or password.' });
   res.setHeader('Set-Cookie', `admin_session=${encodeURIComponent(`${ADMIN_USERNAME}.${makeAdminToken()}`)}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=28800`);
   return res.json({ success: true });
 });
@@ -77,7 +74,20 @@ app.post('/api/admin/login', (req, res) => {
 app.post('/api/visitor/visit', async (req, res) => {
   try {
     if (!pool) return res.status(503).json({ error: 'Database is not configured.' });
-    const result = await pool.query(`UPDATE visitor_counter SET actual_visits = actual_visits + 1, updated_at = NOW() WHERE id = 1 RETURNING actual_visits, actual_visits + display_offset AS displayed_visits`);
+    const result = await pool.query(`
+      WITH counter AS (
+        UPDATE visitor_counter
+        SET actual_visits = actual_visits + 1, updated_at = NOW()
+        WHERE id = 1
+        RETURNING actual_visits, actual_visits + display_offset AS displayed_visits
+      ), daily AS (
+        INSERT INTO visitor_daily (visit_date, visits)
+        VALUES (CURRENT_DATE, 1)
+        ON CONFLICT (visit_date) DO UPDATE SET visits = visitor_daily.visits + 1
+        RETURNING visits
+      )
+      SELECT counter.actual_visits, counter.displayed_visits FROM counter;
+    `);
     res.json({ visits: result.rows[0].displayed_visits });
   } catch (err) { console.error('Visitor counter error:', err); res.status(500).json({ error: 'Unable to update visitor counter.' }); }
 });
@@ -85,7 +95,7 @@ app.post('/api/visitor/visit', async (req, res) => {
 app.get('/api/visitor/count', async (req, res) => {
   try {
     if (!pool) return res.status(503).json({ error: 'Database is not configured.' });
-    const result = await pool.query(`SELECT actual_visits, actual_visits + display_offset AS displayed_visits FROM visitor_counter WHERE id = 1`);
+    const result = await pool.query(`SELECT actual_visits + display_offset AS displayed_visits FROM visitor_counter WHERE id = 1`);
     res.json({ visits: result.rows[0]?.displayed_visits ?? 0 });
   } catch (err) { console.error('Visitor count error:', err); res.status(500).json({ error: 'Unable to load visitor counter.' }); }
 });
@@ -96,6 +106,20 @@ app.get('/api/admin/visitors', requireAdmin, async (req, res) => {
     const result = await pool.query(`SELECT actual_visits, display_offset, actual_visits + display_offset AS displayed_visits, updated_at FROM visitor_counter WHERE id = 1`);
     res.json(result.rows[0]);
   } catch (err) { console.error('Admin visitor counter error:', err); res.status(500).json({ error: 'Unable to load visitor counter.' }); }
+});
+
+app.get('/api/admin/visitors/daily', requireAdmin, async (req, res) => {
+  try {
+    if (!pool) return res.status(503).json({ error: 'Database is not configured.' });
+    const days = Math.min(Math.max(Number(req.query.days) || 30, 1), 365);
+    const result = await pool.query(`
+      SELECT TO_CHAR(day, 'YYYY-MM-DD') AS date, COALESCE(v.visits, 0)::text AS visitors
+      FROM generate_series(CURRENT_DATE - ($1::int - 1), CURRENT_DATE, interval '1 day') AS day
+      LEFT JOIN visitor_daily v ON v.visit_date = day::date
+      ORDER BY day ASC
+    `, [days]);
+    res.json({ days: result.rows });
+  } catch (err) { console.error('Daily visitor graph error:', err); res.status(500).json({ error: 'Unable to load daily visitor data.' }); }
 });
 
 async function updateDisplayedVisitorCount(req, res) {
