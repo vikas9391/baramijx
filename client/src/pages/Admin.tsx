@@ -28,17 +28,24 @@ async function api(path: string, options: RequestInit = {}) {
         ...(options.headers || {}),
       },
     });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Network error calling ${path}: ${message}. API base: ${API_BASE_URL || '(same origin)'}`);
+  } catch {
+    throw new Error('Unable to connect to the admin server. Please check your connection and try again.');
   }
 
   const raw = await response.text();
   let data: any = {};
   try { data = raw ? JSON.parse(raw) : {}; } catch { data = { raw }; }
   if (!response.ok) {
-    const detail = data?.error || data?.message || data?.raw || response.statusText || 'Unknown server error';
-    throw new Error(`${options.method || 'GET'} ${path} → ${response.status} ${response.statusText}: ${detail}`);
+    const detail = data?.error || data?.message || data?.raw || response.statusText;
+    if (response.status === 401) {
+      if (path === '/api/admin/login') throw new Error('Incorrect username or password.');
+      throw new Error('Your admin session is not valid. Please sign in again.');
+    }
+    if (response.status === 400 && detail) throw new Error(String(detail));
+    if (response.status === 403) throw new Error('You do not have permission to perform this action.');
+    if (response.status === 404) throw new Error('The requested admin service could not be found. Please check the server deployment.');
+    if (response.status >= 500) throw new Error('The admin server encountered an error. Please try again.');
+    throw new Error(String(detail || 'Something went wrong. Please try again.'));
   }
   return data;
 }
@@ -92,7 +99,7 @@ export default function AdminPage() {
       const [statsData, conversationsData, problemsData] = await Promise.all([api('/api/admin/stats'), api('/api/admin/conversations'), api('/api/admin/problems')]);
       setStats(statsData); setConversations(conversationsData); setProblems(problemsData);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('401')) setAuthenticated(false);
+      if (error instanceof Error && error.message.includes('session')) setAuthenticated(false);
     } finally { setLoading(false); }
     try {
       const visitorData = await api('/api/admin/visitors');
