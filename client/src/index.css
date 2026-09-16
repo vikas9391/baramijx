@@ -36,7 +36,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
@@ -51,7 +50,7 @@
   --sidebar: #FFFFFF; --sidebar-foreground: #0F1419; --sidebar-accent: #D4A574; --sidebar-accent-foreground: #0F1419; --sidebar-border: #E5E7EB; --sidebar-ring: #D4A574;
 }
 
-.dark { --primary: #0F1419; --primary-foreground: #F8F7F5; --accent: #D4A574; --accent-foreground: #0F1419; --sidebar-primary: #D4A574; --sidebar-primary-foreground: #0F1419; --chart-1: #D4A574; --chart-2: #F8F7F5; --chart-3: #9CA3AF; --chart-4: #F59E0B; --chart-5: #D97706; --background: #0B1015; --foreground: #F8F7F5; --card: #151C24; --card-foreground: #F8F7F5; --popover: #151C24; --popover-foreground: #F8F7F5; --secondary: #1D2732; --secondary-foreground: #F8F7F5; --muted: #27313C; --muted-foreground: #CBD5E1; --destructive: oklch(0.704 0.191 22.216); --destructive-foreground: #FFFFFF; --border: #34404C; --input: #151C24; --ring: #D4A574; --sidebar: #151C24; --sidebar-foreground: #F8F7F5; --sidebar-accent: #D4A574; --sidebar-accent-foreground: #0F1419; --sidebar-border: #34404C; --sidebar-ring: #D4A574; }
+.dark { --primary: #0F1419; --primary-foreground: #F8F7F5; --accent: #D4A574; --accent-foreground: #0F1419; --sidebar-primary: #D4A574; --sidebar-primary-foreground: #0F1419; --chart-1: #D4A574; --chart-2: #F8F7F5; --chart-3: #9CA3AF; --chart-4: #F59E0B; --chart-5: #D97706; --background: #0B1015; --foreground: #F8F7F5; --card: #151C24; --card-foreground: #F8F7F5; --popover: #151C24; --popover-foreground: #F8F7F5; --secondary: #1D2732; --secondary-foreground: #F8F7F5; --muted: #CBD5E1; --destructive: oklch(0.704 0.191 22.216); --destructive-foreground: #FFFFFF; --border: #34404C; --input: #151C24; --ring: #D4A574; --sidebar: #151C24; --sidebar-foreground: #F8F7F5; --sidebar-accent: #D4A574; --sidebar-accent-foreground: #0F1419; --sidebar-border: #34404C; --sidebar-ring: #D4A574; }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
@@ -77,11 +76,16 @@
   .nav-button { @apply px-4 py-2 text-foreground hover:text-accent transition-colors duration-200; }
 }
 
-/* Admin login isolation. The submit button is intentionally NOT tied to .cta-button. */
+/* Admin login is deliberately isolated from the site's CTA button styles. */
 form:has(input[autocomplete="username"]) { color: #0F1419 !important; background: #FFFFFF !important; color-scheme: light !important; }
 form:has(input[autocomplete="username"]) input { color: #0F1419 !important; -webkit-text-fill-color: #0F1419 !important; background: #FFFFFF !important; caret-color: #0F1419 !important; }
 form:has(input[autocomplete="username"]) input::placeholder { color: #64748B !important; -webkit-text-fill-color: #64748B !important; }
-form:has(input[autocomplete="username"]) button[type="submit"] { all: unset !important; box-sizing: border-box !important; width: 100% !important; height: 52px !important; display: flex !important; align-items: center !important; justify-content: center !important; border-radius: 12px !important; background: #0F172A !important; color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; font-family: inherit !important; font-size: 16px !important; font-weight: 700 !important; line-height: 1 !important; opacity: 1 !important; cursor: pointer !important; }
+form:has(input[autocomplete="username"]) button[type="submit"],
+button.admin-login-submit { all: unset !important; box-sizing: border-box !important; width: 100% !important; height: 52px !important; display: flex !important; align-items: center !important; justify-content: center !important; border-radius: 12px !important; background: #0F172A !important; color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; font-family: inherit !important; font-size: 16px !important; font-weight: 700 !important; line-height: 1 !important; opacity: 1 !important; cursor: pointer !important; text-align: center !important; }
+button.admin-login-submit,
+button.admin-login-submit span,
+form:has(input[autocomplete="username"]) button[type="submit"],
+form:has(input[autocomplete="username"]) button[type="submit"] span { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; text-shadow: none !important; }
 form:has(input[autocomplete="username"]) button[type="submit"]::before { content: none !important; }
 form:has(input[autocomplete="username"]) button[type="button"] { color: #475569 !important; -webkit-text-fill-color: #475569 !important; background: transparent !important; }
 form:has(input[autocomplete="username"]) svg { color: #475569 !important; stroke: #475569 !important; }
