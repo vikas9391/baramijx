@@ -44,43 +44,58 @@ export default function DailyVisitorGraph() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError('');
-    setData([]);
 
     const load = async () => {
+      const token = typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
+      if (!token) {
+        if (!cancelled) {
+          setLoading(false);
+          setError('');
+          setData([]);
+        }
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+      setData([]);
+
       try {
-        const token = typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
-        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
         const response = await fetch(`${API_BASE_URL}/api/admin/visitors/daily?year=${selectedYear}&month=${selectedMonth}`, {
           credentials: 'include',
-          headers,
+          headers: { Authorization: `Bearer ${token}` },
           cache: 'no-store',
         });
         const raw = await response.text();
         let result: TrackingInfo | { error?: string } = {};
         try { result = raw ? JSON.parse(raw) : {}; } catch { result = { error: raw }; }
+
         if (!response.ok) {
           if (response.status === 401) {
-            throw new Error('Admin authentication expired or is not available to the graph. Please sign in again.');
+            throw new Error('Your admin session is not valid. Please sign in again.');
           }
           const serverMessage = 'error' in result && result.error ? result.error : response.statusText;
-          throw new Error(`Could not load ${labelForMonth(selectedYear, selectedMonth)} (${response.status}): ${serverMessage}`);
+          throw new Error(`Could not load ${labelForMonth(selectedYear, selectedMonth)}: ${serverMessage}`);
         }
+
         if (!cancelled) {
           const daily = result as TrackingInfo;
           setTrackingStart(daily.start_date);
           setData(Array.isArray(daily.days) ? daily.days : []);
         }
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors.');
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Unable to load daily visitors. Please try again.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
     void load();
-    return () => { cancelled = true; };
+    window.addEventListener('baramijx-admin-auth', load);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('baramijx-admin-auth', load);
+    };
   }, [selectedYear, selectedMonth]);
 
   const start = useMemo(() => { const [year, month] = trackingStart.split('-').map(Number); return { year: year || current.year, month: month || current.month }; }, [trackingStart, current.year, current.month]);
