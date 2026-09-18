@@ -118,6 +118,7 @@ export default function AdminPage() {
     try {
       const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) });
       if (data?.admin_token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.admin_token);
+      window.dispatchEvent(new Event('baramijx-admin-auth'));
       setAuthenticated(true);
       setPassword('');
       await loadDashboard();
@@ -141,6 +142,7 @@ export default function AdminPage() {
   async function handleLogout() {
     await api('/api/admin/logout', { method: 'POST' }).catch(() => undefined);
     sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    window.dispatchEvent(new Event('baramijx-admin-auth')); 
     setAuthenticated(false); setStats(null); setVisitorStats(null); setConversations([]); setProblems([]);
   }
   async function openConversation(id: string) { try { setSelectedConversation(await api(`/api/admin/conversations/${id}`)); } catch (e) { window.alert(e instanceof Error ? e.message : 'Unable to load conversation.'); } }
